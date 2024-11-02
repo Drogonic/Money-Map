@@ -18,6 +18,7 @@ currency_codes = [
     "HKD", "NZD", "ZAR", "SEK", "NOK", "DKK", "MXN", "BRL", "RUB", "PLN"
 ]
 
+
 # Exchange_API Currency Handler
 def get_exchange_rate(base_currency, target_currency):
     url = f"https://v6.exchangerate-api.com/v6/{api_key}/latest/{base_currency}"
@@ -124,8 +125,10 @@ if account_type == "Continue as a Guest":
             else:
                 st.error(message_text)
     else:
-        base_currency = st.selectbox("Select the currency to be exchanged:", currency_codes, index=currency_codes.index("USD"))
-        target_currency = st.selectbox("Select the desired currency:", currency_codes, index=currency_codes.index("EUR"))
+        base_currency = st.selectbox("Select the currency to be exchanged:", currency_codes,
+                                     index=currency_codes.index("USD"))
+        target_currency = st.selectbox("Select the desired currency:", currency_codes,
+                                       index=currency_codes.index("EUR"))
         amount = st.number_input("Enter the amount to convert:", min_value=0.0)
         if st.button("Convert"):
             rate = get_exchange_rate(base_currency, target_currency)
