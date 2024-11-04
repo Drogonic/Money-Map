@@ -1,3 +1,6 @@
 import streamlit as st
+import helpperFunctions
 
-st.write("Guest Page")
+helpperFunctions.hide_sidebar()
+
+
