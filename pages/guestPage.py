@@ -5,7 +5,8 @@ helpperFunctions.hide_sidebar()
 recommended_ratio = 1.2  # Suggested income-to-spend ratio
 recommended_spending_percentage = 80  # Suggested max spending as a percentage of income
 st.title("Money Map")
-currencyExchange, savingsCalulator,settings = st.tabs(["Currency Exchanger", "Income to Spend Ratio Calculator","Settings"])
+currencyExchange, savingsCalulator, settings = st.tabs(
+    ["Currency Exchanger", "Income to Spend Ratio Calculator", "Settings"])
 
 with currencyExchange:
     base_currency = st.selectbox("Select the currency to be exchanged:", helpperFunctions.currency_codes,
@@ -13,11 +14,14 @@ with currencyExchange:
     target_currency = st.selectbox("Select the desired currency:", helpperFunctions.currency_codes,
                                    index=helpperFunctions.currency_codes.index("EUR"))
     amount = st.number_input("Enter the amount to convert:", min_value=0.0)
-    if st.button("Convert"):
+    convertButton = st.button("Convert")
+    if convertButton and base_currency == target_currency:
+        st.write("Please select two different currencies")
+    else:
         rate = helpperFunctions.get_exchange_rate(base_currency, target_currency)
         if rate:
             converted_amount = helpperFunctions.convert_currency(amount, rate)
-            st.success(f"{amount} {base_currency} is equal to {converted_amount:.2f} {target_currency}.")
+            st.success(f"{amount:.2f} {base_currency} is equal to {converted_amount:.2f} {target_currency}.")
 with savingsCalulator:
     monthly_income = st.number_input("Please enter your Monthly Income", min_value=0.0)
     monthly_expenses = st.number_input("Please enter your Monthly Expenses", min_value=0.0)
