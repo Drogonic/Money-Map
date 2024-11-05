@@ -2,6 +2,7 @@ import streamlit as st
 import helpperFunctions
 from streamlit_extras.app_logo import add_logo
 
+# ADD DATABASE CALL HERE
 helpperFunctions.hide_sidebar()
 st.title("Money Map")
 with st.form("Login"):
