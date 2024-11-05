@@ -4,8 +4,8 @@ import helpperFunctions
 helpperFunctions.hide_sidebar()
 recommended_ratio = 1.2  # Suggested income-to-spend ratio
 recommended_spending_percentage = 80  # Suggested max spending as a percentage of income
-
-currencyExchange, savingsCalulator = st.tabs(["Currency Exchanger", "Income to Spend Ratio Calculator"])
+st.title("Money Map")
+currencyExchange, savingsCalulator,settings = st.tabs(["Currency Exchanger", "Income to Spend Ratio Calculator","Settings"])
 
 with currencyExchange:
     base_currency = st.selectbox("Select the currency to be exchanged:", helpperFunctions.currency_codes,
@@ -50,3 +50,7 @@ with savingsCalulator:
             st.warning(message_text)
         else:
             st.error(message_text)
+with settings:
+    st.write("Currently using: Guest Account")
+    if st.button("Logout"):
+        st.switch_page("Homepage.py")
