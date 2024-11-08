@@ -8,7 +8,7 @@ st.title("Money Map")
 with st.form("Login"):
     st.write("Log in")
     username = st.text_input("Username")
-    password = st.text_input("Username", type="password")
+    password = st.text_input("Password", type="password")
 
     if st.form_submit_button("Login"):
         st.switch_page("pages/loggedinUserPage.py")

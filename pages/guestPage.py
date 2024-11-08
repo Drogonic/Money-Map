@@ -56,5 +56,5 @@ with savingsCalulator:
             st.error(message_text)
 with settings:
     st.write("Currently using: Guest Account")
-    if st.button("Logout"):
+    if st.button("Back to Login"):
         st.switch_page("Homepage.py")
