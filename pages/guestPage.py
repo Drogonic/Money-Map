@@ -5,8 +5,8 @@ helpperFunctions.hide_sidebar()
 recommended_ratio = 1.2  # Suggested income-to-spend ratio
 recommended_spending_percentage = 80  # Suggested max spending as a percentage of income
 st.title("Money Map")
-currencyExchange, savingsCalulator, settings = st.tabs(
-    ["Currency Exchanger", "Income to Spend Ratio Calculator", "Settings"])
+currencyExchange, savingsCalculator, Return = st.tabs(
+    ["Currency Exchanger", "Income to Spend Ratio Calculator", "Return to Homepage"])
 
 with currencyExchange:
     base_currency = st.selectbox("Select the currency to be exchanged:", helpperFunctions.currency_codes,
@@ -19,10 +19,10 @@ with currencyExchange:
         st.write("Please select two different currencies")
     else:
         rate = helpperFunctions.get_exchange_rate(base_currency, target_currency)
-        if rate:
+        if rate and convertButton:
             converted_amount = helpperFunctions.convert_currency(amount, rate)
             st.success(f"{amount:.2f} {base_currency} is equal to {converted_amount:.2f} {target_currency}.")
-with savingsCalulator:
+with savingsCalculator:
     monthly_income = st.number_input("Please enter your Monthly Income", min_value=0.0)
     monthly_expenses = st.number_input("Please enter your Monthly Expenses", min_value=0.0)
     ratio = helpperFunctions.income_to_spend_ratio(monthly_income, monthly_expenses)
@@ -54,7 +54,7 @@ with savingsCalulator:
             st.warning(message_text)
         else:
             st.error(message_text)
-with settings:
+with Return:
     st.write("Currently using: Guest Account")
     if st.button("Back to Login"):
         st.switch_page("Homepage.py")

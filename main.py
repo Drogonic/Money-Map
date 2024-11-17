@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import helpperFunctions
 import folium
 import polyline
 from datetime import datetime
@@ -85,13 +86,12 @@ def create_account_form():
 if 'create_account' not in st.session_state:
     st.session_state['create_account'] = False
 
-account_type = st.sidebar.selectbox("Please choose how you wish to continue", options=["Continue as a Guest",
+account_type = st.selectbox("Please choose how you wish to continue", options=["Continue as a Guest",
                                                                                        "Create an Account"])
-st.sidebar.info("If you choose to continue as a Guest your information will not be saved")
+st.info("If you choose to continue as a Guest your information will not be saved")
 
 if account_type == "Continue as a Guest":
-
-    task_type = st.sidebar.selectbox("Are we working on", options=["Income to Spend Ratio Calculator"
+    task_type = st.selectbox("Are we working on", options=["Income to Spend Ratio Calculator"
                                                                    "", "Currency Exchange Calculator"])
 
     if task_type == "Income to Spend Ratio Calculator":
@@ -135,3 +135,4 @@ if account_type == "Continue as a Guest":
             if rate:
                 converted_amount = convert_currency(amount, rate)
                 st.success(f"{amount} {base_currency} is equal to {converted_amount:.2f} {target_currency}.")
+
