@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 
+
 client = MongoClient("mongodb+srv://jesusdiaz1403:b1mRAtZw3MK5Q5eO@moneymap.mpksh.mongodb.net/")
 
 db = client["MoneyMap"]
