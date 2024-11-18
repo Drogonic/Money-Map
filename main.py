@@ -136,3 +136,5 @@ if account_type == "Continue as a Guest":
                 converted_amount = convert_currency(amount, rate)
                 st.success(f"{amount} {base_currency} is equal to {converted_amount:.2f} {target_currency}.")
 
+
+
