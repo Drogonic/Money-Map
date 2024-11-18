@@ -167,3 +167,50 @@ def delete_expense_account(username, expense_name):
         {"$pull": {"expenses": {"expense_name": expense_name}}}
     )
 
+
+def get_income_accounts(username):
+    return None
+
+
+def save_income_account(username, income_data):
+    return None
+
+
+def update_income_account(username, income_name, updated_data):
+    return None
+
+
+def delete_income_account(username, income_name):
+    return None
+
+
+def get_loan_accounts(username):
+    return None
+
+
+def save_loan_account(username, loan_data):
+    return None
+
+
+def update_loan_account(username, selected_loan, updated_data):
+    return None
+
+
+def delete_loan_account(username, selected_loan):
+    return None
+
+
+def get_credit_accounts(username):
+    return None
+
+
+def save_credit_account(username, credit_data):
+    return None
+
+
+def update_credit_account(username, selected_credit, updated_data):
+    return None
+
+
+def delete_credit_account(username, selected_credit):
+    return None
