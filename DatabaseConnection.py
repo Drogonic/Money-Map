@@ -169,48 +169,105 @@ def delete_expense_account(username, expense_name):
 
 
 def get_income_accounts(username):
-    return None
+    user = userInfo.find_one({"username": username}, {"incomes": 1, "_id": 0})
+    if user and "incomes" in user:
+        return user["incomes"]
+    return []
 
 
 def save_income_account(username, income_data):
-    return None
+    userInfo.update_one(
+        {"username": username},
+        {"$push": {"incomes": income_data}}
+    )
 
 
 def update_income_account(username, income_name, updated_data):
-    return None
+    user = userInfo.find_one({"username": username})
+    if user:
+        incomes = user.get("incomes", [])
+        for income in incomes:
+            if income["income_name"] == income_name:
+                income.update(updated_data)
+                break
+        userInfo.update_one(
+            {"username": username},
+            {"$set": {"incomes": incomes}}
+        )
+    
 
 
 def delete_income_account(username, income_name):
-    return None
+    userInfo.update_one(
+        {"username": username},
+        {"$pull": {"incomes": {"income_name": income_name}}}
+    )
 
 
 def get_loan_accounts(username):
-    return None
+    user = userInfo.find_one({"username": username}, {"loans": 1, "_id": 0})
+    if user and "loans" in user:
+        return user["loans"]
+    return []
 
 
 def save_loan_account(username, loan_data):
-    return None
+    userInfo.update_one(
+        {"username": username},
+        {"$push": {"loans": loan_data}}
+    )
 
 
 def update_loan_account(username, selected_loan, updated_data):
-    return None
+    user = userInfo.find_one({"username": username})
+    if user:
+        loans = user.get("loans", [])
+        for loan in loans:
+            if loan["loan_name"] == selected_loan:
+                loan.update(updated_data)
+                break
+        userInfo.update_one(
+            {"username": username},
+            {"$set": {"loans": loans}}
+        )
 
 
 def delete_loan_account(username, selected_loan):
-    return None
+    userInfo.update_one(
+        {"username": username},
+        {"$pull": {"loans": {"loan_name": selected_loan}}}
+    )
 
 
 def get_credit_accounts(username):
-    return None
+    user = userInfo.find_one({"username": username}, {"credit_accounts": 1, "_id": 0})
+    if user and "credit_accounts" in user:
+        return user["credit_accounts"]
+    return []
 
 
 def save_credit_account(username, credit_data):
-    return None
+    userInfo.update_one(
+        {"username": username},
+        {"$push": {"credit_accounts": credit_data}}
+    )
 
 
 def update_credit_account(username, selected_credit, updated_data):
-    return None
-
+    user = userInfo.find_one({"username ": username})
+    if user:
+        credits = user.get("credit_accounts", [])
+        for credit in credits:
+            if credit["credit_name"] == selected_credit:
+                credit.update(updated_data)
+                break
+        userInfo.update_one(
+            {"username": username},
+            {"$set": {"credit_accounts": credits}}
+        )
 
 def delete_credit_account(username, selected_credit):
-    return None
+    userInfo.update_one(
+        {"username": username}, 
+        {"$pull": {"credit_accounts": {"credit_name": selected_credit}}}
+    )
