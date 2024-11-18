@@ -1,12 +1,12 @@
 from pymongo import MongoClient
 import bcrypt
 
-
 client = MongoClient("mongodb+srv://jesusdiaz1403:b1mRAtZw3MK5Q5eO@moneymap.mpksh.mongodb.net/")
 
 db = client["MoneyMap"]
 
 userInfo = db["User"]
+
 
 def userData():
     user_info = {}
@@ -27,7 +27,7 @@ def get_user(username):
     return userInfo.find_one({"username": username})
 
 
-def verify_user(username,password):
+def verify_user(username, password):
     user = get_user(username)
     if user:
         stored_password = user.get("password").encode('utf-8')
@@ -35,7 +35,8 @@ def verify_user(username,password):
             return True
     return False
 
-def save_checking_account(username,account_data):
+
+def save_checking_account(username, account_data):
     user = userInfo.find_one({"username": username})
     if user:
         if "checking_accounts" not in user:
@@ -104,7 +105,6 @@ def get_savings_accounts(username):
     return []
 
 
-
 def save_savings_account(username, account_data):
     userInfo.update_one(
         {"username": username},
@@ -166,6 +166,4 @@ def delete_expense_account(username, expense_name):
         {"username": username},
         {"$pull": {"expenses": {"expense_name": expense_name}}}
     )
-
-
 

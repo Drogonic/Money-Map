@@ -2,13 +2,13 @@ import datetime
 import streamlit as st
 import helpperFunctions
 import DatabaseConnection as db_conn
+
 helpperFunctions.hide_sidebar()
-# REMEMBER TO ADD LOGIC FOR IF THE INPUTS ARE EMPTY
 st.title("Money Map")
 
-checking, saving, expenses, income, loans, credit, search, overview,quick_payoff,settings = st.tabs(
+checking, saving, expenses, income, loans, credit, search, overview, quick_payoff, settings = st.tabs(
     ["Checking", "Savings", "Expenses", "Income"
-        , "Loans", "Credit Cards", "Search", "Overview","Quick Payoff Calculator", "Settings"])
+        , "Loans", "Credit Cards", "Search", "Overview", "Quick Payoff Calculator", "Settings"])
 with checking:
     st.subheader("Manage Checking Accounts")
 
@@ -119,11 +119,10 @@ with checking:
         selected_account = st.selectbox("Select Account to Update", [""] + account_names)
         if selected_account:
             # Delete Account
-                if st.button("Confirm Delete"):
-                    db_conn.delete_checking_account(username, selected_account)
-                    st.success(f"Checking account '{selected_account}' deleted successfully!")
-                    st.experimental_rerun()
-
+            if st.button("Confirm Delete"):
+                db_conn.delete_checking_account(username, selected_account)
+                st.success(f"Checking account '{selected_account}' deleted successfully!")
+                st.experimental_rerun()
 
 with saving:
     st.subheader("Manage Savings Accounts")
@@ -137,7 +136,8 @@ with saving:
         savings_accounts = []
 
     # Select option: Add or Update
-    add_or_update = st.selectbox("Would you like to?", ["", "Add new account", "Update existing account", "Delete Account"])
+    add_or_update = st.selectbox("Would you like to?",
+                                 ["", "Add new account", "Update existing account", "Delete Account"])
 
     # Add New Savings Account
     if add_or_update == "Add new account":
@@ -226,7 +226,8 @@ with saving:
                     "interest_rate_apy": interest_rate_apy,
                     "compounding_type": compounding_type,
                 }
-                db_conn.update_savings_account(username, selected_account, updated_data)  # New function to update savings accounts
+                db_conn.update_savings_account(username, selected_account,
+                                               updated_data)  # New function to update savings accounts
                 st.success(f"Savings account '{selected_account}' updated successfully!")
                 st.experimental_rerun()
 
@@ -253,7 +254,8 @@ with expenses:
         expense_accounts = []
 
     # Select option: Add, Update, or Delete
-    add_or_update = st.selectbox("Would you like to?", ["", "Add new expense", "Update existing expense", "Delete expense"])
+    add_or_update = st.selectbox("Would you like to?",
+                                 ["", "Add new expense", "Update existing expense", "Delete expense"])
 
     # Add New Expense
     if add_or_update == "Add new expense":
@@ -316,7 +318,8 @@ with expenses:
                     "is_recurring": is_recurring,
                     "period": expense_period,
                 }
-                db_conn.update_expense_account(username, selected_expense, updated_data)  # New function to update expenses
+                db_conn.update_expense_account(username, selected_expense,
+                                               updated_data)  # New function to update expenses
                 st.success(f"Expense '{selected_expense}' updated successfully!")
                 st.experimental_rerun()
 
@@ -345,7 +348,7 @@ with loans:
     initial_loan_amount = st.number_input("Initial loan amount", min_value=0)
     loan_Amount_left = st.number_input("Amount left on loan", min_value=0)
     loan_Amount_monthly_payment = st.number_input("Monthly payment", min_value=0)
-    loan_interest = st.number_input("Interest Rate (APR%)",min_value=0)
+    loan_interest = st.number_input("Interest Rate (APR%)", min_value=0)
     loan_start_date = st.date_input("Enter Loan Start Date")
     loan_end_date = st.date_input("Enter Loan End Date")
     if st.button("Submit"):
@@ -361,9 +364,9 @@ with credit:
 with quick_payoff:
     loan_Amount = st.number_input("Amount of loan")
     interest = st.number_input("Interest rate (APR%)")
-    pay_by = st.number_input("Payoff in how many months", min_value= 0)
+    pay_by = st.number_input("Payoff in how many months", min_value=0)
     if st.button("Calculate Payment"):
-        helpperFunctions.quick_payoff(pay_by,interest,loan_Amount)
+        helpperFunctions.quick_payoff(pay_by, interest, loan_Amount)
 
 with search:
     st.write("WIP")
