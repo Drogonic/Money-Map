@@ -4,6 +4,7 @@ import helpperFunctions
 import DatabaseConnection as db_conn
 import checking_account
 import savings_account
+import expenses_account
 
 
 helpperFunctions.hide_sidebar()
@@ -19,100 +20,7 @@ with saving:
     savings_account.savings_account()
 
 with expenses:
-    st.subheader("Manage Expenses")
-
-    # Fetch existing expenses for the logged-in user
-    if "username" in st.session_state:
-        username = st.session_state["username"]
-        expense_accounts = db_conn.get_expense_accounts(username)  # New function to fetch expenses
-    else:
-        st.error("You must be logged in to manage expenses.")
-        expense_accounts = []
-
-    # Select option: Add, Update, or Delete
-    add_or_update = st.selectbox("Would you like to?",
-                                 ["", "Add new expense", "Update existing expense", "Delete expense"])
-
-    # Add New Expense
-    if add_or_update == "Add new expense":
-        st.write("### Add New Expense")
-        expense_name = st.text_input("Expense Name")
-        expense_amount = st.number_input("Expense Amount", min_value=0.00)
-        expense_date = st.date_input("Expense Date", max_value=datetime.date.today())
-        is_recurring = st.checkbox("Expense Recurring")
-        if is_recurring:
-            expense_period = st.selectbox("Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"])
-        else:
-            expense_period = None
-
-        # Save the new expense
-        if st.button("Save Expense"):
-            # Check if the expense name already exists
-            existing_names = [expense["expense_name"] for expense in expense_accounts]
-            if expense_name.strip() in existing_names:
-                st.error(f"The expense name '{expense_name}' already exists. Please use a different name.")
-            elif expense_name.strip() == "":
-                st.error("Expense name cannot be empty.")
-            else:
-                expense_data = {
-                    "expense_name": expense_name,
-                    "amount": expense_amount,
-                    "date": str(expense_date),
-                    "is_recurring": is_recurring,
-                    "period": expense_period,
-                }
-                db_conn.save_expense_account(username, expense_data)  # New function to save expenses
-                st.success(f"New expense '{expense_name}' added successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Update Existing Expense
-    elif add_or_update == "Update existing expense":
-        st.write("### Update Existing Expense")
-        expense_names = [expense["expense_name"] for expense in expense_accounts]
-        selected_expense = st.selectbox("Select Expense to Update", [""] + expense_names)
-
-        if selected_expense:
-            expense_data = next(exp for exp in expense_accounts if exp["expense_name"] == selected_expense)
-            expense_name = st.text_input("Expense Name", value=expense_data["expense_name"])
-            expense_amount = st.number_input("Expense Amount", min_value=0.00, value=expense_data["amount"])
-            expense_date = st.date_input("Expense Date", value=datetime.date.fromisoformat(expense_data["date"]))
-            is_recurring = st.checkbox("Expense Recurring", value=expense_data["is_recurring"])
-            if is_recurring:
-                expense_period = st.selectbox(
-                    "Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"],
-                    index=["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"].index(expense_data["period"])
-                )
-            else:
-                expense_period = None
-
-            # Save updates
-            if st.button("Update Expense"):
-                updated_data = {
-                    "expense_name": expense_name,
-                    "amount": expense_amount,
-                    "date": str(expense_date),
-                    "is_recurring": is_recurring,
-                    "period": expense_period,
-                }
-                db_conn.update_expense_account(username, selected_expense,
-                                               updated_data)  # New function to update expenses
-                st.success(f"Expense '{selected_expense}' updated successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Delete Expense
-    elif add_or_update == "Delete expense":
-        expense_names = [expense["expense_name"] for expense in expense_accounts]
-        selected_expense = st.selectbox("Select Expense to Delete", [""] + expense_names)
-
-        if selected_expense:
-            if st.button("Confirm Delete"):
-                db_conn.delete_expense_account(username, selected_expense)  # New function to delete expenses
-                st.success(f"Expense '{selected_expense}' deleted successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
+    expenses_account.expenses_account()
 with income:
     st.subheader("Manage Income")
     # Fetch existing income for the logged-in user
