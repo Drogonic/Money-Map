@@ -5,6 +5,7 @@ import DatabaseConnection as db_conn
 import checking_account
 import savings_account
 import expenses_account
+import income_account
 
 
 helpperFunctions.hide_sidebar()
@@ -22,99 +23,7 @@ with saving:
 with expenses:
     expenses_account.expenses_account()
 with income:
-    st.subheader("Manage Income")
-    # Fetch existing income for the logged-in user
-    if "username" in st.session_state:
-        username = st.session_state["username"]
-        income_accounts = db_conn.get_income_accounts(username)  # New function to fetch income
-    else:
-        st.error("You must be logged in to manage Income.")
-        income_accounts = []
-
-    # Select option: Add, Update, or Delete
-    add_or_update = st.selectbox("Would you like to?",
-                                 ["", "Add new income", "Update existing income", "Delete income"])
-
-    # Add New income
-    if add_or_update == "Add new income":
-        st.write("### Add New Income")
-        income_name = st.text_input("Income Name")
-        income_amount = st.number_input("Income Amount", min_value=0.00)
-        income_date = st.date_input("Income Date", max_value=datetime.date.today())
-        is_recurring = st.checkbox("Income Recurring")
-        if is_recurring:
-            income_period = st.selectbox("Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"])
-        else:
-            income_period = None
-
-        # Save the new income
-        if st.button("Save Income"):
-            # Check if the income name already exists
-            existing_names = [income["income_name"] for income in income_accounts]
-            if income_name.strip() in existing_names:
-                st.error(f"The income name '{income_name}' already exists. Please use a different name.")
-            elif income_name.strip() == "":
-                st.error("Income name cannot be empty.")
-            else:
-                income_data = {
-                    "income_name": income_name,
-                    "amount": income_amount,
-                    "date": str(income_date),
-                    "is_recurring": is_recurring,
-                    "period": income_period,
-                }
-                db_conn.save_income_account(username, income_data)  # New function to save income
-                st.success(f"New income '{income_name}' added successfully!")
-                # Comment the following lines if as needed
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Update Existing income
-    elif add_or_update == "Update existing income":
-        st.write("### Update Existing Income")
-        income_names = [income["income_name"] for income in income_accounts]
-        selected_income = st.selectbox("Select income to Update", [""] + income_names)
-
-        if selected_income:
-            income_data = next(inc for inc in income_accounts if inc["income_name"] == selected_income)
-            income_name = st.text_input("Income Name", value=income_data["income_name"])
-            income_amount = st.number_input("Income Amount", min_value=0.00, value=income_data["amount"])
-            income_date = st.date_input("Income Date", value=datetime.date.fromisoformat(income_data["date"]))
-            is_recurring = st.checkbox("Income Recurring", value=income_data["is_recurring"])
-            if is_recurring:
-                income_period = st.selectbox(
-                    "Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"],
-                    index=["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"].index(income_data["period"])
-                )
-            else:
-                income_period = None
-
-            # Save updates
-            if st.button("Update income"):
-                updated_data = {
-                    "income_name": income_name,
-                    "amount": income_amount,
-                    "date": str(income_date),
-                    "is_recurring": is_recurring,
-                    "period": income_period,
-                }
-                db_conn.update_income_account(username, selected_income,
-                                              updated_data)  # New function to update income
-                st.success(f"Income '{selected_income}' updated successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Delete income
-    elif add_or_update == "Delete income":
-        income_names = [income["income_name"] for income in income_accounts]
-        selected_income = st.selectbox("Select Income to Delete", [""] + income_names)
-
-        if selected_income:
-            if st.button("Confirm Delete"):
-                db_conn.delete_income_account(username, selected_income)  # New function to delete income
-                st.success(f"Income '{selected_income}' deleted successfully!")
-                # st.experimental_rerun()
-                st.rerun()
+    income_account.income_account()
 
 with loans:
     st.subheader("Manage Loans")
