@@ -49,6 +49,7 @@ def reset_new_account_state():
 
 
 def reset_update_account_state():
+    st.session_state["select_update_checking"] = ""
     st.session_state["update_checking_account"] = ""
     st.session_state["update_checking_amount"] = 0.00
     st.session_state["update_checking_fee"] = False
