@@ -28,15 +28,15 @@ def initialize_session_state_saving():
         "reset_update_saving_state": False,
         # Selection keys
         "add_or_update_saving_account": "",
-        "selected_saving_account": "",
-        "last_selected_account": None,
+        "select_update_saving": "",
+        "last_selected_saving_account": None,
     }
     for key, value in default_state.items():
         if key not in st.session_state:
             st.session_state[key] = value
 
 
-def reset_new_account_state():
+def reset_new_savings_account_state():
     st.session_state["new_saving_account"] = ""
     st.session_state["new_saving_amount"] = 0.00
     st.session_state["new_saving_fee"] = False
@@ -48,7 +48,7 @@ def reset_new_account_state():
     st.session_state["reset_saving_state"] = False
 
 
-def reset_update_account_state():
+def reset_update_savings_account_state():
     st.session_state["select_update_saving"] = ""
     st.session_state["update_saving_account"] = ""
     st.session_state["update_saving_amount"] = 0.00
@@ -58,7 +58,7 @@ def reset_update_account_state():
     st.session_state["update_saving_interest"] = False
     st.session_state["update_saving_interest_rate"] = 0.00
     st.session_state["update_saving_compounding_type"] = "Daily"
-    st.session_state["last_selected_account"] = None
+    st.session_state["last_selected_saving_account"] = None
     st.session_state["reset_update_saving_state"] = False
 
 
@@ -78,9 +78,9 @@ def saving_account():
 
     # Handle reset flags
     if st.session_state.get("reset_saving_state", False):
-        reset_new_account_state()
+        reset_new_savings_account_state()
     if st.session_state.get("reset_update_saving_state", False):
-        reset_update_account_state()
+        reset_update_savings_account_state()
 
     # Select options
     add_or_update = st.selectbox(
@@ -141,7 +141,7 @@ def saving_account():
                     time.sleep(2)
                     st.rerun()
 
-    # Update Existing saving Account
+    # Update Existing Savings Account
     elif add_or_update == "Update existing account":
         st.write("### Update Existing Savings Account")
         account_names = [account["account_name"] for account in saving_accounts]
@@ -153,7 +153,7 @@ def saving_account():
         )
 
         if selected_account:
-            if st.session_state.get("last_selected_account") != selected_account:
+            if st.session_state.get("last_selected_saving_account") != selected_account:
                 account_data = next(acc for acc in saving_accounts if acc["account_name"] == selected_account)
                 st.session_state.update({
                     "update_saving_account": account_data["account_name"],
@@ -164,7 +164,7 @@ def saving_account():
                     "update_saving_interest": account_data["has_interest"],
                     "update_saving_interest_rate": account_data["interest_rate_apy"],
                     "update_saving_compounding_type": account_data["compounding_type"] or "Daily",
-                    "last_selected_account": selected_account
+                    "last_selected_saving_account": selected_account
                 })
 
             saving_name = st.text_input("Name of saving Account", key="update_saving_account")
@@ -210,6 +210,7 @@ def saving_account():
 
     # Delete Account
     elif add_or_update == "Delete Account":
+        st.write("### Delete Savings Account")
         account_names = [account["account_name"] for account in saving_accounts]
         selected_account = st.selectbox("Select Account to Delete", [""] + account_names)
         if selected_account:

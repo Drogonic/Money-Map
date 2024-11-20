@@ -1,10 +1,48 @@
+import time
 import streamlit as st
 import DatabaseConnection as db_conn
 import datetime
 
 
+def initialize_session_state_expenses():
+    """Initialize session state with default values."""
+    default_state = {
+        # New expense keys
+        "new_expense_name": "",
+        "new_expense_amount": 0.00,
+        "new_expense_date": datetime.date.today(),
+        "new_expense_recurring": False,
+        "new_expense_period": "Monthly",
+        # Update expense keys
+        "update_expense_name": "",
+        "update_expense_amount": 0.00,
+        "update_expense_date": datetime.date.today(),
+        "update_expense_recurring": False,
+        "update_expense_period": "Monthly",
+        # Selection keys
+        "add_or_update_expense_account": "",
+        "selected_expense": "",
+        "last_selected_expense_account": None,
+    }
+    for key, value in default_state.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
+
+
+def reset_expense_state(prefix):
+    """Reset session state for a given prefix (new or update)."""
+    st.session_state[f"{prefix}_expense_name"] = ""
+    st.session_state[f"{prefix}_expense_amount"] = 0.00
+    st.session_state[f"{prefix}_expense_date"] = datetime.date.today()
+    st.session_state[f"{prefix}_expense_recurring"] = False
+    st.session_state[f"{prefix}_expense_period"] = "Monthly"
+    st.session_state[f"reset_{prefix}_expense_state"] = False
+
+
 def expenses_account():
-    st.subheader("Manage Expenses")
+    initialize_session_state_expenses()  # Initialize session state
+
+    st.subheader("Manage Expenses Accounts")
 
     # Pull expenses for the logged-in user
     if "username" in st.session_state:
@@ -14,19 +52,18 @@ def expenses_account():
         st.error("You must be logged in to manage expenses.")
         expense_accounts = []
 
-    # Select option
-    add_or_update = st.selectbox("Would you like to?",
-                                 ["", "Add new expense", "Update existing expense", "Delete expense"],
-                                 key="add_or_update_expense")
+    # Handle reset flags
+    if st.session_state.get("reset_expense_state", False):
+        reset_expense_state("new")
+    if st.session_state.get("reset_update_expense_state", False):
+        reset_expense_state("update")
 
-    # If user is adding another account then reset state
-    if "reset_expense_state" in st.session_state and st.session_state["reset_expense_state"]:
-        st.session_state["new_expense_name"] = ""
-        st.session_state["new_expense_amount"] = 0.00
-        st.session_state["new_expense_date"] = datetime.date.today()
-        st.session_state["new_expense_recurring"] = False
-        st.session_state["new_expense_period"] = "Daily"
-        st.session_state["reset_expense_state"] = False  # Turn off the reset flag
+    # Select option
+    add_or_update = st.selectbox(
+        "Would you like to?",
+        ["", "Add new expense", "Update existing expense", "Delete expense"],
+        key="add_or_update_expense_account"
+    )
 
     # Add New Expense
     if add_or_update == "Add new expense":
@@ -35,14 +72,13 @@ def expenses_account():
         expense_amount = st.number_input("Expense Amount", min_value=0.00, key="new_expense_amount")
         expense_date = st.date_input("Expense Date", max_value=datetime.date.today(), key="new_expense_date")
         is_recurring = st.checkbox("Expense Recurring", key="new_expense_recurring")
-        if is_recurring:
-            expense_period = st.selectbox("Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"],
-                                          key="new_expense_period")
-        else:
-            expense_period = None
+        expense_period = st.selectbox(
+            "Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"],
+            key="new_expense_period"
+        ) if is_recurring else None
 
         # Save the new expense
-        if st.button("Save Expense"):
+        if st.button("Save Expense", key="save_new_expense"):
             # Check if the expense name already exists
             existing_names = [expense["expense_name"] for expense in expense_accounts]
             if expense_name.strip() in existing_names:
@@ -62,61 +98,53 @@ def expenses_account():
 
                 # Set reset flag to clear inputs
                 st.session_state["reset_expense_state"] = True
-
-                # Option to add another expense or reload
-                if st.button("Add Another Expense"):
-                    st.rerun()
+                time.sleep(2)
+                st.rerun()
 
     # Update Existing Expense
     elif add_or_update == "Update existing expense":
         st.write("### Update Existing Expense")
         expense_names = [expense["expense_name"] for expense in expense_accounts]
+
         selected_expense = st.selectbox("Select Expense to Update", [""] + expense_names, key="select_update_expense")
 
-        # Reset flag for session state
-        if "reset_update_expense" not in st.session_state:
-            st.session_state["reset_update_expense"] = False
-
-        # Reset session state if the reset flag is True
-        if st.session_state["reset_update_expense"]:
-            st.session_state["update_expense_name"] = ""
-            st.session_state["update_expense_amount"] = 0.00
-            st.session_state["update_expense_date"] = datetime.date.today()
-            st.session_state["update_expense_recurring"] = False
-            st.session_state["update_expense_period"] = "Daily"
-            st.session_state["reset_update_expense"] = False  # Turn off the reset flag
-
-        # Handle selecting a different expense
         if selected_expense:
-            if "selected_expense" not in st.session_state or selected_expense != st.session_state["selected_expense"]:
-                st.session_state["selected_expense"] = selected_expense
+            if st.session_state.get("last_selected_expense_account") != selected_expense:
                 expense_data = next(exp for exp in expense_accounts if exp["expense_name"] == selected_expense)
+
+                # Initialize or update session state
                 st.session_state["update_expense_name"] = expense_data["expense_name"]
                 st.session_state["update_expense_amount"] = expense_data["amount"]
-                st.session_state["update_expense_date"] = datetime.date.fromisoformat(expense_data["date"])
+                try:
+                    st.session_state["update_expense_date"] = datetime.date.fromisoformat(expense_data["date"])
+                except ValueError:
+                    st.session_state["update_expense_date"] = datetime.date.today()  # Fallback for invalid dates
                 st.session_state["update_expense_recurring"] = expense_data["is_recurring"]
-                st.session_state["update_expense_period"] = expense_data.get("period", "Daily")
+                st.session_state["update_expense_period"] = expense_data["period"]
 
-        # Displaying inputs for the selected expense
-        if selected_expense:
+                st.session_state["last_selected_expense_account"] = selected_expense
+
+            # Input fields bound to session state
             expense_name = st.text_input("Expense Name", key="update_expense_name")
             expense_amount = st.number_input("Expense Amount", min_value=0.00, key="update_expense_amount")
-            expense_date = st.date_input("Expense Date", key="update_expense_date")
+            expense_date = st.date_input(
+                "Expense Date",
+                value=st.session_state["update_expense_date"],
+                max_value=datetime.date.today(),
+                key="update_expense_date"
+            )
             is_recurring = st.checkbox("Expense Recurring", key="update_expense_recurring")
-            if is_recurring:
-                expense_period = st.selectbox(
-                    "Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"],
-                    key="update_expense_period"
-                )
-            else:
-                expense_period = None
+            expense_period = st.selectbox(
+                "Recurring Period", ["Daily", "Weekly", "Biweekly", "Monthly", "Yearly"],
+                key="update_expense_period"
+            ) if is_recurring else None
 
             # Save updates
             if st.button("Update Expense", key="update_expense_save"):
                 updated_data = {
                     "expense_name": st.session_state["update_expense_name"],
                     "amount": st.session_state["update_expense_amount"],
-                    "date": str(st.session_state["update_expense_date"]),
+                    "date": st.session_state["update_expense_date"].isoformat(),
                     "is_recurring": st.session_state["update_expense_recurring"],
                     "period": st.session_state["update_expense_period"],
                 }
@@ -124,20 +152,19 @@ def expenses_account():
                 st.success(f"Expense '{selected_expense}' updated successfully!")
 
                 # Reset flag to clear session state
-                st.session_state["reset_update_expense"] = True
-
-                # Update another expense
-                if st.button("Update Another Expense", key="update_another_expense"):
-                    st.rerun()
+                st.session_state["reset_update_expense_state"] = True
+                time.sleep(2)
+                st.rerun()
 
     # Delete Expense
     elif add_or_update == "Delete expense":
         st.write("### Delete Expense")
         expense_names = [expense["expense_name"] for expense in expense_accounts]
-        selected_expense = st.selectbox("Select Expense to Delete", [""] + expense_names, key="select_delete_expense")
+        selected_expense = st.selectbox("Select Expense to Delete", [""] + expense_names)
 
         if selected_expense:
             if st.button("Confirm Delete", key="delete_expense"):
                 db_conn.delete_expense_account(username, selected_expense)  # Delete expense in DB
                 st.success(f"Expense '{selected_expense}' deleted successfully!")
+                time.sleep(2)
                 st.rerun()

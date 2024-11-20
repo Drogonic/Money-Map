@@ -28,15 +28,15 @@ def initialize_session_state_checking():
         "reset_update_checking_state": False,
         # Selection keys
         "add_or_update_checking_account": "",
-        "selected_checking_account": "",
-        "last_selected_account": None,
+        "select_update_checking": "",
+        "last_selected__checking_account": None,
     }
     for key, value in default_state.items():
         if key not in st.session_state:
             st.session_state[key] = value
 
 
-def reset_new_account_state():
+def reset_new_checking_account_state():
     st.session_state["new_checking_account"] = ""
     st.session_state["new_checking_amount"] = 0.00
     st.session_state["new_checking_fee"] = False
@@ -48,7 +48,7 @@ def reset_new_account_state():
     st.session_state["reset_checking_state"] = False
 
 
-def reset_update_account_state():
+def reset_update_checking_account_state():
     st.session_state["select_update_checking"] = ""
     st.session_state["update_checking_account"] = ""
     st.session_state["update_checking_amount"] = 0.00
@@ -58,7 +58,7 @@ def reset_update_account_state():
     st.session_state["update_checking_interest"] = False
     st.session_state["update_checking_interest_rate"] = 0.00
     st.session_state["update_checking_compounding_type"] = "Daily"
-    st.session_state["last_selected_account"] = None
+    st.session_state["last_selected_checking_account"] = None
     st.session_state["reset_update_checking_state"] = False
 
 
@@ -77,9 +77,9 @@ def checking_account():
 
     # Handle reset flags
     if st.session_state.get("reset_checking_state", False):
-        reset_new_account_state()
+        reset_new_checking_account_state()
     if st.session_state.get("reset_update_checking_state", False):
-        reset_update_account_state()
+        reset_update_checking_account_state()
 
     # Select options
     add_or_update = st.selectbox(
@@ -116,6 +116,7 @@ def checking_account():
             interest_rate_apy = 0.00
             compounding_type = None
 
+        # Save the new Checking
         if st.button("Save Checking Account", key="save_new_checking_account"):
             if not checking_name.strip():
                 st.error("Checking account name cannot be empty.")
@@ -152,7 +153,7 @@ def checking_account():
         )
 
         if selected_account:
-            if st.session_state.get("last_selected_account") != selected_account:
+            if st.session_state.get("last_selected_checking_account") != selected_account:
                 account_data = next(acc for acc in checking_accounts if acc["account_name"] == selected_account)
                 st.session_state.update({
                     "update_checking_account": account_data["account_name"],
@@ -163,7 +164,7 @@ def checking_account():
                     "update_checking_interest": account_data["has_interest"],
                     "update_checking_interest_rate": account_data["interest_rate_apy"],
                     "update_checking_compounding_type": account_data["compounding_type"] or "Daily",
-                    "last_selected_account": selected_account
+                    "last_selected_checking_account": selected_account
                 })
 
             checking_name = st.text_input("Name of Checking Account", key="update_checking_account")
@@ -209,6 +210,7 @@ def checking_account():
 
     # Delete Account
     elif add_or_update == "Delete Account":
+        st.write("### Delete Checking Account")
         account_names = [account["account_name"] for account in checking_accounts]
         selected_account = st.selectbox("Select Account to Delete", [""] + account_names)
         if selected_account:
