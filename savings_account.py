@@ -181,11 +181,9 @@ def saving_account():
             if has_interest:
                 interest_rate_apy = st.number_input("Interest Rate (APY%)", min_value=0.00,
                                                     key="update_saving_interest_rate")
-                compounding_type = st.selectbox(
-                    "Compounding Type",
-                    ["Daily", "Monthly", "Quarterly", "Annual"],
-                    key="update_saving_compounding_type"
-                )
+                compounding_type = st.selectbox("Compounding Type",
+                                                ["Daily", "Monthly", "Quarterly", "Annual", "Don't Know"],
+                                                key="update_saving_compounding_type")
             else:
                 interest_rate_apy = 0.00
                 compounding_type = None

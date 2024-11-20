@@ -104,12 +104,11 @@ def checking_account():
 
         has_interest = st.checkbox("Calculate Interest Return", key="new_checking_interest")
         if has_interest:
-            interest_rate_apy = st.number_input("Interest Rate (APY%)", min_value=0.00, key="new_checking_interest_rate")
-            compounding_type = st.selectbox(
-                "Compounding Type",
-                ["Daily", "Monthly", "Quarterly", "Annual", "Don't Know"],
-                key="new_checking_compounding_type"
-            )
+            interest_rate_apy = st.number_input("Interest Rate (APY%)", min_value=0.00,
+                                                key="new_checking_interest_rate")
+            compounding_type = st.selectbox("Compounding Type",
+                                            ["Daily", "Monthly", "Quarterly", "Annual", "Don't Know"],
+                                            key="new_checking_compounding_type")
             if compounding_type == "Don't Know":
                 compounding_type = helpperFunctions.account_type()
         else:
@@ -181,11 +180,9 @@ def checking_account():
             if has_interest:
                 interest_rate_apy = st.number_input("Interest Rate (APY%)", min_value=0.00,
                                                     key="update_checking_interest_rate")
-                compounding_type = st.selectbox(
-                    "Compounding Type",
-                    ["Daily", "Monthly", "Quarterly", "Annual"],
-                    key="update_checking_compounding_type"
-                )
+                compounding_type = st.selectbox("Compounding Type",
+                                                ["Daily", "Monthly", "Quarterly", "Annual", "Don't Know"],
+                                                key="update_checking_compounding_type")
             else:
                 interest_rate_apy = 0.00
                 compounding_type = None

@@ -5,7 +5,6 @@ import datetime
 
 
 def initialize_session_state_expenses():
-    """Initialize session state with default values."""
     default_state = {
         # New expense keys
         "new_expense_name": "",
@@ -29,14 +28,20 @@ def initialize_session_state_expenses():
             st.session_state[key] = value
 
 
-def reset_expense_state(prefix):
-    """Reset session state for a given prefix (new or update)."""
-    st.session_state[f"{prefix}_expense_name"] = ""
-    st.session_state[f"{prefix}_expense_amount"] = 0.00
-    st.session_state[f"{prefix}_expense_date"] = datetime.date.today()
-    st.session_state[f"{prefix}_expense_recurring"] = False
-    st.session_state[f"{prefix}_expense_period"] = "Monthly"
-    st.session_state[f"reset_{prefix}_expense_state"] = False
+def reset_new_expense_state():
+    st.session_state[f"new_expense_name"] = ""
+    st.session_state[f"new_expense_amount"] = 0.00
+    st.session_state[f"new_expense_date"] = datetime.date.today()
+    st.session_state[f"new_expense_recurring"] = False
+    st.session_state[f"new_expense_period"] = "Monthly"
+    st.session_state[f"reset_new_expense_state"] = False
+def reset_update_expense_state():
+    st.session_state[f"update_expense_name"] = ""
+    st.session_state[f"update_expense_amount"] = 0.00
+    st.session_state[f"update_expense_date"] = datetime.date.today()
+    st.session_state[f"update_expense_recurring"] = False
+    st.session_state[f"update_expense_period"] = "Monthly"
+    st.session_state[f"reset_update_expense_state"] = False
 
 
 def expenses_account():
@@ -53,10 +58,10 @@ def expenses_account():
         expense_accounts = []
 
     # Handle reset flags
-    if st.session_state.get("reset_expense_state", False):
-        reset_expense_state("new")
+    if st.session_state.get("reset_new_expense_state", False):
+        reset_new_expense_state()
     if st.session_state.get("reset_update_expense_state", False):
-        reset_expense_state("update")
+        reset_update_expense_state()
 
     # Select option
     add_or_update = st.selectbox(
@@ -97,7 +102,7 @@ def expenses_account():
                 st.success(f"New expense '{expense_name}' added successfully!")
 
                 # Set reset flag to clear inputs
-                st.session_state["reset_expense_state"] = True
+                st.session_state["reset_new_expense_state"] = True
                 time.sleep(2)
                 st.rerun()
 
