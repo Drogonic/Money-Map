@@ -6,6 +6,8 @@ import checking_account
 import savings_account
 import expenses_account
 import income_account
+import loans_account
+import creditcard_account
 
 
 helpperFunctions.hide_sidebar()
@@ -18,7 +20,7 @@ with checking:
     checking_account.checking_account()
 
 with saving:
-    savings_account.savings_account()
+    savings_account.saving_account()
 
 with expenses:
     expenses_account.expenses_account()
@@ -26,199 +28,11 @@ with income:
     income_account.income_account()
 
 with loans:
-    st.subheader("Manage Loans")
-    # Fetch existing loans for the logged-in user
-    if "username" in st.session_state:
-        username = st.session_state["username"]
-        loan_accounts = db_conn.get_loan_accounts(username)  # New function to fetch loans
-    else:
-        st.error("You must be logged in to manage loans.")
-        loan_accounts = []
-
-    # Select option: Add, Update, or Delete
-    add_or_update = st.selectbox("Would you like to?",
-                                 ["", "Add new loan", "Update existing loan", "Delete loan"])
-
-    # Add New Loan
-    if add_or_update == "Add new loan":
-        st.write("### Add New Loan")
-        loan_name = st.text_input("Loan Name")
-        loan_amount_left = st.number_input("Loan Amount Left", min_value=0.00)
-        loan_start_date = st.date_input("Loan Start Date", max_value=datetime.date.today())
-        loan_end_date = st.date_input("Enter Loan End Date", max_value=datetime.date.today())
-        loan_Amount_monthly_payment = st.number_input("Monthly payment", min_value=0.00)
-        loan_interest = st.number_input("Interest Rate (APR%)", min_value=0.00)
-
-        # Save the new Loan
-        if st.button("Save Loan"):
-            # Check if the loan name already exists
-            existing_names = [loan["loan_name"] for loan in loan_accounts]
-            if loan_name.strip() in existing_names:
-                st.error(f"The loan name '{loan_name}' already exists. Please use a different name.")
-            elif loan_name.strip() == "":
-                st.error("Loan name cannot be empty.")
-            else:
-                loan_data = {
-                    "loan_name": loan_name,
-                    "amount": loan_amount_left,
-                    "start date": str(loan_start_date),
-                    "end date": str(loan_end_date),
-                    "monthly payment": loan_Amount_monthly_payment,
-                    "interest": loan_interest,
-                }
-                db_conn.save_loan_account(username, loan_data)  # New function to save loans
-                st.success(f"New loan '{loan_name}' added successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Update Existing Loan
-    elif add_or_update == "Update existing Loan":
-        st.write("### Update Existing Loan")
-        loan_names = [loan["loan_name"] for loan in loan_accounts]
-        selected_loan = st.selectbox("Select loan to Update", [""] + loan_names)
-
-        if selected_loan:
-            loan_data = next(loan for loan in loan_accounts if loan["loan_name"] == selected_loan)
-            loan_name = st.text_input("Loan Name", value=loan_data["loan_name"])
-            loan_amount_left = st.number_input("Loan Amount", min_value=0.00, value=loan_data["amount"])
-            loan_start_date = st.date_input("Loan start date", value=datetime.date.fromisoformat(loan_data["start date"]
-                                                                                                 ))
-            loan_end_date = st.date_input("Loan End date", value=datetime.date.fromisoformat(loan_data["end date"]
-                                                                                             ))
-            loan_Amount_monthly_payment = st.number_input("Monthly payment", min_value=0.00, value=loan_data["monthly "
-                                                                                                             "payment"])
-            loan_interest = st.number_input("Interest Rate (APR%)", min_value=0.00, value=loan_data["interest"])
-
-            # Save updates
-            if st.button("Update Loan"):
-                updated_data = {
-                    "loan_name": loan_name,
-                    "amount": loan_amount_left,
-                    "start date": str(loan_start_date),
-                    "end date": str(loan_end_date),
-                    "monthly payment": loan_Amount_monthly_payment,
-                    "interest": loan_interest,
-                }
-                db_conn.update_loan_account(username, selected_loan,
-                                            updated_data)  # New function to update loan
-                st.success(f"Loan '{selected_loan}' updated successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Delete Loan
-    elif add_or_update == "Delete loan":
-        loan_names = [loan["loan_name"] for loan in loan_accounts]
-        selected_loan = st.selectbox("Select Loan to Delete", [""] + loan_names)
-
-        if selected_loan:
-            if st.button("Confirm Delete"):
-                db_conn.delete_loan_account(username, selected_loan)  # New function to delete loan
-                st.success(f"Loan '{selected_loan}' deleted successfully!")
-                # st.experimental_rerun()
-                st.rerun()
+    loans_account.loan_accounts()
 
 with credit:
-    st.subheader("Manage Credit Cards")
-    # Fetch existing Credit Cards for the logged-in user
-    if "username" in st.session_state:
-        username = st.session_state["username"]
-        credit_accounts = db_conn.get_credit_accounts(username)  # New function to fetch credit cards
-    else:
-        st.error("You must be logged in to manage Credit Cards.")
-        credit_accounts = []
+    creditcard_account.credit_accounts()
 
-    # Select option: Add, Update, or Delete
-    add_or_update = st.selectbox("Would you like to?",
-                                 ["", "Add new Credit Card", "Update existing Credit Card", "Delete Credit Card"])
-
-    # Add New Card
-    if add_or_update == "Add new Credit Card":
-        st.write("### Add New Credit Card")
-        credit_name = st.text_input("Credit Card Name")
-        credit_statement_amount = st.number_input("Statement Balance", min_value=0.00)
-        credit_statement_date = st.date_input("Statement Date", max_value=datetime.date.today())
-        credit_due_date = st.date_input("Enter Statement Due Date", max_value=datetime.date.today())
-        credit_interest = st.number_input("Credit Card Interest Rate (APR%)", min_value=0.00)
-        annual_fee = st.checkbox("Annual Fee")
-        if annual_fee:
-            fee_amount = st.number_input("Fee Amount", min_value=0.00)
-        else:
-            fee_amount = 0.0
-        # Save the new card
-        if st.button("Save Credit Card"):
-            # Check if the card name already exists
-            existing_names = [credit["credit_name"] for credit in credit_accounts]
-            if credit_name.strip() in existing_names:
-                st.error(f"The Credit Card name '{credit_name}' already exists. Please use a different name.")
-            elif credit_name.strip() == "":
-                st.error("credit card name cannot be empty.")
-            else:
-                credit_data = {
-                    "credit_name": credit_name,
-                    "credit_statement_amount": credit_statement_amount,
-                    "statement date": str(credit_statement_date),
-                    "due date": str(credit_due_date),
-                    "annual fee": annual_fee,
-                    "fee amount": fee_amount,
-                    "interest": credit_interest,
-                }
-                db_conn.save_credit_account(username, credit_data)  # New function to save loans
-                st.success(f"New Credit Card '{credit_name}' added successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Update Existing card
-    elif add_or_update == "Update existing Credit Card":
-        st.write("### Update Existing Credit Card")
-        credit_names = [credit["loan_name"] for credit in credit_accounts]
-        selected_credit = st.selectbox("Select credit to Update", [""] + credit_names)
-
-        if selected_credit:
-            credit_data = next(credit for credit in credit_accounts if credit["credit_name"] == selected_credit)
-            credit_name = st.text_input("Credit Card Name", value=credit_data["credit_name"])
-            credit_statement_amount = st.number_input("Statement Balance", min_value=0.00,
-                                                      value=credit_data["credit_statement_amount"])
-
-            credit_statement_date = st.date_input("Statement Date", max_value=datetime.date.today(), value=
-            datetime.date.fromisoformat(credit_data["statement date"]))
-
-            credit_due_date = st.date_input("Enter Statement Due Date", max_value=datetime.date.today(), value=
-            datetime.date.fromisoformat(credit_data["due date"]))
-
-            credit_interest = st.number_input("Credit Card Interest Rate (APR%)", min_value=0.00, value=credit_data["interest"])
-            annual_fee = st.checkbox("Annual Fee")
-            if annual_fee:
-                fee_amount = st.number_input("Fee Amount", min_value=0.00, value=credit_data["annual fee"])
-            else:
-                fee_amount = 0.0
-            # Save updates
-            if st.button("Update Credit Card"):
-                updated_data = {
-                    "credit_name": credit_name,
-                    "credit_statement_amount": credit_statement_amount,
-                    "statement date": str(credit_statement_date),
-                    "due date": str(credit_due_date),
-                    "annual fee": annual_fee,
-                    "fee amount": fee_amount,
-                    "interest": credit_interest,
-                }
-                db_conn.update_credit_account(username, selected_credit,
-                                              updated_data)  # New function to update loan
-                st.success(f"Credit card '{selected_credit}' updated successfully!")
-                # st.experimental_rerun()
-                st.rerun()
-
-    # Delete credit card
-    elif add_or_update == "Delete credit card":
-        credit_names = [credit["credit_name"] for credit in credit_accounts]
-        selected_credit = st.selectbox("Select Credit Card to Delete", [""] + credit_names)
-
-        if selected_credit:
-            if st.button("Confirm Delete"):
-                db_conn.delete_credit_account(username, selected_credit)  # New function to delete loan
-                st.success(f"Credit Card '{selected_credit}' deleted successfully!")
-                # st.experimental_rerun()
-                st.rerun()
 with financial_tools:
     choice = st.selectbox("Choose Tool", ("Quick Payoff Calculator", "Currency Exchange Calculator"))
     if choice == "Quick Payoff Calculator":

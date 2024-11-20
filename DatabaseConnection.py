@@ -254,7 +254,7 @@ def save_credit_account(username, credit_data):
 
 
 def update_credit_account(username, selected_credit, updated_data):
-    user = userInfo.find_one({"username ": username})
+    user = userInfo.find_one({"username": username})
     if user:
         credits = user.get("credit_accounts", [])
         for credit in credits:
