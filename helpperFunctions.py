@@ -95,6 +95,37 @@ def account_type():
         return "Daily"
 
 
+def apr_calculator(amount, rate, compounding_type, interest_type, fees, loan_term):
+    total_interest = 0
+    decimal_rate = rate / 100
+
+    if compounding_type == "Monthly":
+        compounding = 12
+    elif compounding_type == "Quarterly":
+        compounding = 4
+    elif compounding_type == "Annually":
+        compounding = 1
+    else:
+        compounding = 1
+
+    if interest_type == "Simple APR":
+        total_interest = amount * decimal_rate * loan_term
+
+    elif interest_type == "Compounding APR":
+        funct1 = compounding * loan_term
+        funct2 = (1+(decimal_rate/compounding)) ** funct1
+        effective_rate = funct2 - 1
+        total_interest = amount * effective_rate
+
+    total_cost = total_interest + amount + fees
+    funct3 = total_cost - amount
+    funct4 = amount * loan_term
+    actual_apr = (funct3/funct4) * 100
+    total_difference = total_cost - amount
+    return st.success(f"The total cost of this loan is  {round(total_cost,2)}, and the actual APR is: {round(actual_apr,2)}%, "
+                      f"you will pay  {total_difference} extra.")
+
+
 def apy_calculator(amount, rate, compounding_type, checking_saving):
     compounding = 1
     if compounding_type == "Daily":

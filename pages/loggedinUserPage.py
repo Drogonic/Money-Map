@@ -1,4 +1,5 @@
-import datetime
+import time
+import financial_tools
 import streamlit as st
 import helpperFunctions
 import DatabaseConnection as db_conn
@@ -13,7 +14,7 @@ import creditcard_account
 helpperFunctions.hide_sidebar()
 st.title("Money Map")
 
-checking, saving, expenses, income, loans, credit, search, overview, financial_tools, settings = st.tabs(
+checking, saving, expenses, income, loans, credit, search, overview, financialtools, settings = st.tabs(
     ["Checking", "Savings", "Expenses", "Income"
         , "Loans", "Credit Cards", "Search", "Overview", "Financial Tools", "Settings"])
 with checking:
@@ -33,29 +34,8 @@ with loans:
 with credit:
     creditcard_account.credit_accounts()
 
-with financial_tools:
-    choice = st.selectbox("Choose Tool", ("Quick Payoff Calculator", "Currency Exchange Calculator"))
-    if choice == "Quick Payoff Calculator":
-        loan_Amount = st.number_input("Amount of loan")
-        interest = st.number_input("Interest rate (APR%)")
-        pay_by = st.number_input("Payoff in how many months", min_value=0)
-        if st.button("Calculate Payment"):
-            helpperFunctions.quick_payoff(pay_by, interest, loan_Amount)
-    elif choice == "Currency Exchange Calculator":
-        base_currency = st.selectbox("Select the currency to be exchanged:", helpperFunctions.currency_codes,
-                                     index=helpperFunctions.currency_codes.index("USD"))
-        target_currency = st.selectbox("Select the desired currency:", helpperFunctions.currency_codes,
-                                       index=helpperFunctions.currency_codes.index("EUR"))
-        amount = st.number_input("Enter the amount to convert:", min_value=0.0)
-        convertButton = st.button("Convert")
-        if convertButton and base_currency == target_currency:
-            st.write("Please select two different currencies")
-        else:
-            rate = helpperFunctions.get_exchange_rate(base_currency, target_currency)
-            if rate and convertButton:
-                converted_amount = helpperFunctions.convert_currency(amount, rate)
-                st.success(f"{amount:.2f} {base_currency} is equal to {converted_amount:.2f} {target_currency}.")
-
+with financialtools:
+    financial_tools.financial_tools()
 with search:
     st.write("WIP")
     # need to understand database
@@ -64,4 +44,18 @@ with overview:
     # need to understand database
 with settings:
     if st.button("Log Out"):
-        st.switch_page("Homepage.py")
+        st.session_state.clear()
+        st.success("You have been logged out.")
+        time.sleep(1)
+        st.rerun()
+    if st.button("Delete Account"):
+        if st.button("Proceed with deletion"):
+            db_conn.delete_account(st.session_state.get("username"))
+            st.success("Your account has been deleted.")
+            st.session_state.clear()
+            time.sleep(1)
+            st.experimental_rerun()
+        elif st.button("Cancel deletion"):
+            st.info("Account deletion canceled.")
+            st.rerun()
+

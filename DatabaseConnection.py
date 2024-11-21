@@ -266,8 +266,25 @@ def update_credit_account(username, selected_credit, updated_data):
             {"$set": {"credit_accounts": credits}}
         )
 
+
 def delete_credit_account(username, selected_credit):
     userInfo.update_one(
         {"username": username}, 
         {"$pull": {"credit_accounts": {"credit_name": selected_credit}}}
     )
+
+
+def delete_account(username):
+    try:
+        # Find and delete the user's record
+        result = userInfo.delete_one({"username": username})
+
+        if result.deleted_count > 0:
+            print(f"User account for '{username}' has been successfully deleted.")
+            return True
+        else:
+            print(f"No account found for the username: '{username}'.")
+            return False
+    except Exception as e:
+        print(f"An error occurred while deleting the account: {e}")
+        return False
