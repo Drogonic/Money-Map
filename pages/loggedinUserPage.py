@@ -9,6 +9,7 @@ import expenses_account
 import income_account
 import loans_account
 import creditcard_account
+import overview_accounts
 
 
 helpperFunctions.hide_sidebar()
@@ -40,21 +41,30 @@ with search:
     st.write("WIP")
     # need to understand database
 with overview:
-    st.write("WIP")
-    # need to understand database
+    # Example usage in Streamlit
+    if "username" in st.session_state:
+        username = st.session_state["username"]
+        overview_accounts.load_format_display_checking_data(username)
+        overview_accounts.load_format_display_saving_data(username)
+        overview_accounts.load_expenses_for_month(username)
+        overview_accounts.load_expenses_for_year(username)
+        overview_accounts.load_income_for_month(username)
+        overview_accounts.load_income_for_year(username)
+    else:
+        st.error("Please log in to view your checking accounts.")
 with settings:
     if st.button("Log Out"):
         st.session_state.clear()
         st.success("You have been logged out.")
         time.sleep(1)
-        st.rerun()
+        st.switch_page("Homepage.py")
     if st.button("Delete Account"):
         if st.button("Proceed with deletion"):
             db_conn.delete_account(st.session_state.get("username"))
             st.success("Your account has been deleted.")
             st.session_state.clear()
             time.sleep(1)
-            st.experimental_rerun()
+            st.switch_page("Homepage.py")
         elif st.button("Cancel deletion"):
             st.info("Account deletion canceled.")
             st.rerun()
