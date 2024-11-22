@@ -122,8 +122,10 @@ def apr_calculator(amount, rate, compounding_type, interest_type, fees, loan_ter
     funct4 = amount * loan_term
     actual_apr = (funct3/funct4) * 100
     total_difference = total_cost - amount
+    monthly_payment = total_cost/(loan_term * 12)
     return st.success(f"The total cost of this loan is  {round(total_cost,2)}, and the actual APR is: {round(actual_apr,2)}%, "
-                      f"you will pay  {total_difference} extra.")
+                      f"you will pay  {round(total_difference,2)} extra. Your monthly payments should be "
+                      f"${round(monthly_payment,2)}")
 
 
 def apy_calculator(amount, rate, compounding_type, checking_saving):
