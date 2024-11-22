@@ -1,18 +1,20 @@
 from PIL import Image
 import streamlit as st
+import base64
 import helpperFunctions
 
 helpperFunctions.hide_sidebar()
 
+def get_base64_image(image_path):
+    """Convert an image to a base64 string."""
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode("utf-8")
 
-def add_logo(logo_path, width, height):
-    """Read and return a resized logo"""
-    logo = Image.open(logo_path)
-    modified_logo = logo.resize((width, height))
-    return modified_logo
-
-
-my_logo = add_logo(logo_path="MoneyMapLogo.png", width=100, height=100)
+# Base64 strings for images
+logo_base64 = get_base64_image("MoneyMapLogo.png")
+calc_base64 = get_base64_image("Calculator.png")
+coins_base64 = get_base64_image("Coins.png")
+pie_base64 = get_base64_image("PiChart.png")
 
 # Add navigation buttons at the top-right corner using Streamlit
 nav_col1, nav_col2, nav_col3 = st.columns([6, 1, 1])
@@ -34,8 +36,13 @@ with container:
     col1, col2 = st.columns([1, 5])  # Narrow column for logo, wide column for title
 
     with col1:
-        # Place the logo in the first column
-        st.image(my_logo)
+        # Place the logo using base64-encoded image
+        st.markdown(
+            f"""
+            <img src="data:image/png;base64,{logo_base64}" width="100" height="100" />
+            """,
+            unsafe_allow_html=True,
+        )
 
     with col2:
         # Place the title in the second column
@@ -51,7 +58,6 @@ with container:
             '<span style="color:gray;">Be mindful of your finances all in one place.</span>',
             unsafe_allow_html=True,
         )
-
 
 # Continue with the rest of your Streamlit code
 st.title("Track. Plan. Prosper.")
@@ -86,21 +92,10 @@ with col5:
 st.write()
 st.write()
 col6, col7, col8 = st.columns(3)
-imageCalc = Image.open("Calculator.png")
-imageCoins = Image.open("Coins.png")
-imagePi = Image.open("PiChart.png")
 
-# Render the HTML in Streamlit
-#st.markdown(bubble_html, unsafe_allow_html=True)
-
-#with st.container():
+# Use base64 images inside HTML bubbles
 with col6:
-        #st.markdown(bubble_html, unsafe_allow_html = True)
-        # Display the image inside the bubble
-        #st.image(imageCalc, width=100, caption="Feature Image", use_container_width=False)
-
-        # Create the HTML content with the bubble and image inside it
-        bubble_html = """
+    bubble_html = f"""
     <div style="
         border: 2px solid #4CAF50;
         border-radius: 10px;
@@ -111,18 +106,16 @@ with col6:
         text-align: center;
     ">
         <h2 style="color: #4CAF50; font-size: 1.5em; margin-bottom: 10px;">Expense Tracker</h2>
-        <img src="Calculator.png" alt="Feature Image" style="width: 100px; height: 100px; margin-bottom: 15px;">
+        <img src="data:image/png;base64,{calc_base64}" alt="Calculator Image" style="width: 100px; height: 80px; margin-bottom: 15px;">
         <p style="font-size: 1em; color: #333;">
             Easily calculate your net income by entering your earnings and expenses.
         </p>
     </div>
     """
-
-        # Render the HTML bubble with image inside using Markdown
-        st.markdown(bubble_html, unsafe_allow_html=True)
+    st.markdown(bubble_html, unsafe_allow_html=True)
 
 with col7:
-    bubble_html = """
+    bubble_html = f"""
     <div style="
         border: 2px solid #4CAF50;
         border-radius: 10px;
@@ -133,19 +126,16 @@ with col7:
         text-align: center;
     ">
         <h2 style="color: #4CAF50; font-size: 1.5em; margin-bottom: 10px;">Net Income Calculator</h2>
+        <img src="data:image/png;base64,{coins_base64}" alt="Coins Image" style="width: 100px; height: 80px; margin-bottom: 15px;">
         <p style="font-size: 1em; color: #333;">
-            Easily calculate your net income by entering your earnings and expenses. 
+            Calculate your monthly income and understand your financial trends.
         </p>
     </div>
     """
-
-
-    # Render the HTML in Streamlit
     st.markdown(bubble_html, unsafe_allow_html=True)
 
-    #st.markdown(" ##### Net Income Ratio Calculator")
 with col8:
-    bubble_html = """
+    bubble_html = f"""
     <div style="
         border: 2px solid #4CAF50;
         border-radius: 10px;
@@ -156,18 +146,12 @@ with col8:
         text-align: center;
     ">
         <h2 style="color: #4CAF50; font-size: 1.5em; margin-bottom: 10px;">Currency Exchange</h2>
-        <img src="https://via.placeholder.com/150" alt="Feature Image" style="width: 100px; height: 100px; margin-bottom: 15px;">
+        <img src="data:image/png;base64,{pie_base64}" alt="Pie Chart Image" style="width: 100px; height: 70px; margin-bottom: 15px;">
         <p style="font-size: 1em; color: #333;">
-            Easily calculate your net income by entering your earnings and expenses. 
+            Get the latest currency exchange rates for smarter financial decisions.
         </p>
     </div>
     """
-
-    # Render the HTML in Streamlit
     st.markdown(bubble_html, unsafe_allow_html=True)
 
-    #st.markdown(" ##### Currency Exchange")
-
-st.write("AND MORE!")
-
-
+st.subheader("More features reserved for registered members!")
