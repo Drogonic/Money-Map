@@ -17,8 +17,7 @@ nav_col1, nav_col2, nav_col3 = st.columns([6, 1, 1])
 
 with nav_col2:
     if st.button("About"):
-        st.write("Redirecting to About Page...")  # Replace with actual navigation
-        st.experimental_rerun()  # Replace with st.switch_page("about") for multipage apps
+        st.switch_page("pages/About.py")
 
 with nav_col3:
     if st.button("Login"):
