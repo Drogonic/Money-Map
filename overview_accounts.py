@@ -24,7 +24,8 @@ def load_format_display_checking_data(username):
             "Fee Amount": account.get("fee_amount", 0.0) if account.get("has_fee", False) else "None",
             "Has Interest?": "Yes" if account.get("has_interest", False) else "No",
             "APY%": account.get("interest_rate_apy", 0.0) if account.get("has_interest", False) else "None",
-            "Compounding Type": account.get("compounding_type", "None") if account.get("has_interest", False) else "None",
+            "Compounding Type": account.get("compounding_type", "None") if account.get("has_interest",
+                                                                                       False) else "None",
         }
         # Appending the formatted account to the array
         formatted_checking_data.append(formatted_checking_account)
@@ -33,8 +34,12 @@ def load_format_display_checking_data(username):
     df = pd.DataFrame(formatted_checking_data)
 
     # Sum of amount in accounts
-    total_amount = df["Amount"].sum()
-
+    total_amount = 0
+    checkNone = df.get("Amount", 0)
+    if checkNone is 0:
+        st.write("")
+    else:
+        total_amount = df["Amount"].sum()
     # Start rows at 1
     df.index = df.index + 1
 
@@ -60,13 +65,21 @@ def load_format_display_saving_data(username):
             "Fee Amount": account.get("fee_amount", 0.0) if account.get("has_fee", False) else "None",
             "Has Interest?": "Yes" if account.get("has_interest", False) else "No",
             "APY%": account.get("interest_rate_apy", 0.0) if account.get("has_interest", False) else "None",
-            "Compounding Type": account.get("compounding_type", "None") if account.get("has_interest", False) else "None",
+            "Compounding Type": account.get("compounding_type", "None") if account.get("has_interest",
+                                                                                       False) else "None",
         }
         formatted_saving_data.append(formatted_saving_account)
 
     df = pd.DataFrame(formatted_saving_data)
 
-    total_amount = df["Amount"].sum()
+    total_amount = 0
+    checkNone = df.get("Amount", 0)
+    if checkNone is 0:
+        st.write("")
+    else:
+        total_amount = df["Amount"].sum()
+    # Start rows at 1
+    df.index = df.index + 1
 
     df.index = df.index + 1
 
@@ -335,6 +348,3 @@ def load_income_for_year(username):
         st.write(f"**Total Amount of Income for This Year:** ${total_year:,.2f}")
     else:
         st.write("No income recorded for this year.")
-
-
-
