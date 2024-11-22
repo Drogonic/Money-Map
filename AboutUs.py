@@ -9,11 +9,25 @@ def add_logo(logo_path, width, height):
     modified_logo = logo.resize((width, height))
     return modified_logo
 
-my_logo = add_logo(logo_path="MoneyMapLogo.jpg", width=100, height=100)
+
+my_logo = add_logo(logo_path="MoneyMapLogo.png", width=100, height=100)
+
+# Add navigation buttons at the top-right corner using Streamlit
+nav_col1, nav_col2, nav_col3 = st.columns([6, 1, 1])
+
+with nav_col2:
+    if st.button("About"):
+        st.write("Redirecting to About Page...")  # Replace with actual navigation
+        st.experimental_rerun()  # Replace with st.switch_page("about") for multipage apps
+
+with nav_col3:
+    if st.button("Login"):
+        st.switch_page("Homepage.py")
+
 # Create an empty container for layout control
 container = st.container()
 
-# Add the logo to the container (upper-left corner of the main page)
+# Add the logo and title to the container (upper-left corner of the main page)
 with container:
     # Define the layout with two columns for logo and title
     col1, col2 = st.columns([1, 5])  # Narrow column for logo, wide column for title
@@ -27,13 +41,17 @@ with container:
         st.markdown(
             """
             <h1 style="font-size: 2.5em;">
-                Money<span style="color: red;">Map</span>
+                Money <span style="color: red;">Map</span>
             </h1>
             """,
-            unsafe_allow_html=True
+            unsafe_allow_html=True,
         )
-        #st.markdown(" ###### Be mindful of your finances all in one place.")
-        st.markdown('<span style="color:gray;">Be mindful of your finances all in one place</span>', unsafe_allow_html=True)
+        st.markdown(
+            '<span style="color:gray;">Be mindful of your finances all in one place.</span>',
+            unsafe_allow_html=True,
+        )
+
+
 # Continue with the rest of your Streamlit code
 st.title("Track. Plan. Prosper.")
 st.subheader("Take control of your money.")
