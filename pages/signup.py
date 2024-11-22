@@ -27,4 +27,4 @@ with st.form("Signup"):
             st.session_state["create_account"] = True
 
 if st.button("Return to Log-in Page"):
-    st.switch_page("pages/Homepage.py")
+    st.switch_page("AboutUs.py")
