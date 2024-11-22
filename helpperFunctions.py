@@ -36,31 +36,15 @@ def convert_currency(amount, rate):
     return amount * rate
 
 
-def income_to_spend_ratio(income, expenses):
-    return income / expenses if expenses > 0 else float('inf')
+def saving_calculator(income, expenses):
+    saved = income - expenses
+    ratio = saved / income if income > 0 else float('inf')
+    return ratio
 
 
 # Percentage Calculator
 def spending_percentage(income, expenses):
     return (expenses / income) * 100 if income > 0 else 0
-
-
-def manage_income_sources():
-    st.subheader("Monthly Income Sources")
-    st.write("Add multiple income sources, specify pay periods, and mark if they are recurring.")
-
-    # Data for multiple income sources
-    income_sources = []
-    num_sources = st.number_input("Enter the number of income sources:", min_value=1, max_value=10, value=1)
-
-    for i in range(num_sources):
-        source_name = st.text_input(f"Income Source #{i + 1} Name", key=f"source_name_{i}")
-        amount = st.number_input(f"Amount for {source_name}", min_value=0.0, key=f"amount_{i}")
-        pay_period = st.selectbox(f"Pay Period for {source_name}", ["Weekly", "Bi-Weekly", "Monthly", "Annually"],
-                                  key=f"pay_period_{i}")
-        recurring = st.checkbox(f"Is {source_name} recurring?", key=f"recurring_{i}")
-        income_sources.append({"Source Name": source_name, "Amount": amount, "Pay Period": pay_period,
-                               "Recurring": recurring})
 
 
 def quick_payoff(pay_by, interest_rate, loan_amount):
