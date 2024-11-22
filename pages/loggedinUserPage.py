@@ -10,14 +10,15 @@ import income_account
 import loans_account
 import creditcard_account
 import overview_accounts
+import smart_accounting
 
 
 helpperFunctions.hide_sidebar()
 st.title("Money Map")
 
-checking, saving, expenses, income, loans, credit, search, overview, financialtools, settings = st.tabs(
+checking, saving, expenses, income, loans, credit, smart, overview, financialtools, settings = st.tabs(
     ["Checking", "Savings", "Expenses", "Income"
-        , "Loans", "Credit Cards", "Search", "Overview", "Financial Tools", "Settings"])
+        , "Loans", "Credit Cards", "Smart Accounting", "Overview", "Financial Tools", "Settings"])
 with checking:
     checking_account.checking_account()
 
@@ -37,21 +38,10 @@ with credit:
 
 with financialtools:
     financial_tools.financial_tools()
-with search:
-    st.write("WIP")
-    # need to understand database
+with smart:
+    smart_accounting.smart_selection()
 with overview:
-    # Example usage in Streamlit
-    if "username" in st.session_state:
-        username = st.session_state["username"]
-        overview_accounts.load_format_display_checking_data(username)
-        overview_accounts.load_format_display_saving_data(username)
-        overview_accounts.load_expenses_for_month(username)
-        overview_accounts.load_expenses_for_year(username)
-        overview_accounts.load_income_for_month(username)
-        overview_accounts.load_income_for_year(username)
-    else:
-        st.error("Please log in to view your checking accounts.")
+    overview_accounts.overview_selection()
 with settings:
     if st.button("Log Out"):
         st.session_state.clear()
