@@ -1,16 +1,23 @@
 from PIL import Image
 import streamlit as st
+import helpperFunctions
+
+helpperFunctions.hide_sidebar()
 
 logo = "MoneyMapLogo.png"  # Replace with the path to your logo file
 
 
-col1, col2 = st.columns([1, 7])
+col1, col2, col3 = st.columns([1, 7, 1])
 
 with col1:
     st.image(logo, width=70)
 
 with col2:
     st.markdown("<h1 style='font-size: 30px;'>Money <span style='color: red;'>Map</span></h1>", unsafe_allow_html=True)
+
+with col3:
+    if st.button("Login"):
+        st.switch_page("pages/Homepage.py")
 
 
 st.markdown("<h1 style='text-align: center;'>About Us</h1>", unsafe_allow_html=True)

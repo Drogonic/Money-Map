@@ -1,6 +1,8 @@
 from PIL import Image
 import streamlit as st
+import helpperFunctions
 
+helpperFunctions.hide_sidebar()
 
 
 def add_logo(logo_path, width, height):
