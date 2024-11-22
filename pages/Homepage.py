@@ -7,6 +7,10 @@ import DatabaseConnection as db_conn
 helpperFunctions.hide_sidebar()
 st.title("Money Map")
 
+def show_homepage():
+    st.title("Homepage")
+    st.write("Welcome to the homepage of the app!")
+
 with st.form("Login"):
     st.write("Log in")
     username = st.text_input("Username")

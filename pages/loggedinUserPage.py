@@ -47,14 +47,14 @@ with settings:
         st.session_state.clear()
         st.success("You have been logged out.")
         time.sleep(1)
-        st.switch_page("Homepage.py")
+        st.switch_page("pages/Homepage.py")
     if st.button("Delete Account"):
         if st.button("Proceed with deletion"):
             db_conn.delete_account(st.session_state.get("username"))
             st.success("Your account has been deleted.")
             st.session_state.clear()
             time.sleep(1)
-            st.switch_page("Homepage.py")
+            st.switch_page("pages/Homepage.py")
         elif st.button("Cancel deletion"):
             st.info("Account deletion canceled.")
             st.rerun()

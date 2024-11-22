@@ -22,7 +22,7 @@ with nav_col2:
 
 with nav_col3:
     if st.button("Login"):
-        st.switch_page("Homepage.py")
+        st.switch_page("pages/Homepage.py")
 
 # Create an empty container for layout control
 container = st.container()
@@ -97,7 +97,6 @@ with col6:
         #st.markdown(bubble_html, unsafe_allow_html = True)
         # Display the image inside the bubble
         #st.image(imageCalc, width=100, caption="Feature Image", use_container_width=False)
-        import streamlit as st
 
         # Create the HTML content with the bubble and image inside it
         bubble_html = """

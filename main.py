@@ -2,12 +2,13 @@ import streamlit as st
 import requests
 import helpperFunctions
 import folium
-import polyline
+#import polyline
 from datetime import datetime
-from streamlit_folium import folium_static
+#from streamlit_folium import folium_static
 import plotly.express as px
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 st.title("MoneyMap App")
 st.header("Streamlit and Exchange Rate API")
@@ -100,6 +101,8 @@ if account_type == "Continue as a Guest":
         ratio = income_to_spend_ratio(monthly_income, monthly_expenses)
         percentage_spent = spending_percentage(monthly_income, monthly_expenses)
         amount_saved_or_spent = monthly_income - monthly_expenses  # Positive if saving, negative if overspending
+
+
 
         # Determine message color based on savings
         if amount_saved_or_spent < 0:
