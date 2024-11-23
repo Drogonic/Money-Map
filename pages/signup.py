@@ -3,6 +3,17 @@ import helpperFunctions
 import DatabaseConnection as db_conn
 import bcrypt
 helpperFunctions.hide_sidebar()
+
+logo = "MoneyMapLogo.png"
+
+col1, col2 = st.columns([1, 7])
+
+with col1:
+    st.image(logo, width=70)
+
+with col2:
+    st.markdown("<h1 style='font-size: 30px;'>Money <span style='color: red;'>Map</span></h1>", unsafe_allow_html=True)
+
 # we have to implement a check in the future for those that enter a matching user or email to an already created account
 with st.form("Signup"):
     st.write("Create Account")

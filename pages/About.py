@@ -4,7 +4,7 @@ import helpperFunctions
 
 helpperFunctions.hide_sidebar()
 
-logo = "MoneyMapLogo.png"  # Replace with the path to your logo file
+logo = "MoneyMapLogo.png"
 
 
 col1, col2, col3 = st.columns([1, 7, 1])
@@ -71,12 +71,14 @@ st.write("")
 col7, col8, col9 = st.columns([3, 3, 3])
 
 with col7:
-    st.subheader("    ")
+    st.subheader("")
 
 with col8:
     if st.button("Sign up to try it yourself!"):
         st.switch_page("pages/signup.py")
+    elif st.button("Continue as a Guest"):
+        st.switch_page("pages/guestPage.py")
 
 
 with col9:
-    st.subheader("    ")
+    st.subheader("")

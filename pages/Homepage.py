@@ -5,7 +5,15 @@ import DatabaseConnection as db_conn
 
 # ADD DATABASE CALL HERE
 helpperFunctions.hide_sidebar()
-st.title("Money Map")
+logo = "MoneyMapLogo.png"
+
+col1, col2 = st.columns([1, 7])
+
+with col1:
+    st.image(logo, width=70)
+
+with col2:
+    st.markdown("<h1 style='font-size: 30px;'>Money <span style='color: red;'>Map</span></h1>", unsafe_allow_html=True)
 
 def show_homepage():
     st.title("Homepage")

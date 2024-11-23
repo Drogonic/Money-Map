@@ -5,7 +5,15 @@ helpperFunctions.hide_sidebar()
 recommended_saving_ratio = 0.2  # Suggested ratio for savings
 recommended_saving_percentage = 20  # Suggested max spending as a percentage of income
 recommended_spending_percentage = 80  # Spend 80% or less
-st.title("Money Map")
+logo = "MoneyMapLogo.png"
+
+col1, col2 = st.columns([1, 7])
+
+with col1:
+    st.image(logo, width=70)
+
+with col2:
+    st.markdown("<h1 style='font-size: 30px;'>Money <span style='color: red;'>Map</span></h1>", unsafe_allow_html=True)
 currencyExchange, savingsCalculator, Return = st.tabs(
     ["Currency Exchanger", "Spending Analyzer", "Return to Homepage"])
 
