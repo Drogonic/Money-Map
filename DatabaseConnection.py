@@ -274,6 +274,30 @@ def delete_credit_account(username, selected_credit):
     )
 
 
+def get_savings_goals(username):
+    user = userInfo.find_one({"username": username}, {"savings_goals": 1, "_id": 0})
+    return user.get("savings_goals", []) if user else []
+
+
+def save_savings_goal(username, goal_data):
+    userInfo.update_one({"username": username}, {"$push": {"savings_goals": goal_data}})
+
+
+def update_savings_goal(username, goal_name, updated_goal_data):
+    user = userInfo.find_one({"username": username})
+    if user:
+        goals = user.get("savings_goals", [])
+        for goal in goals:
+            if goal["goal_name"] == goal_name:
+                goal.update(updated_goal_data)
+                break
+        userInfo.update_one({"username": username}, {"$set": {"savings_goals": goals}})
+
+
+def delete_savings_goal(username, goal_name):
+    userInfo.update_one({"username": username}, {"$pull": {"savings_goals": {"goal_name": goal_name}}})
+
+
 def delete_account(username):
     try:
         # Find and delete the user's record
@@ -288,3 +312,5 @@ def delete_account(username):
     except Exception as e:
         print(f"An error occurred while deleting the account: {e}")
         return False
+
+

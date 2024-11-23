@@ -1,7 +1,6 @@
 import streamlit as st
 import requests
-from datetime import datetime, date
-from dateutil.relativedelta import relativedelta
+import math
 
 api_key = "105693d8dc0fa3dc8b61fc35"
 
@@ -36,6 +35,7 @@ def convert_currency(amount, rate):
     return amount * rate
 
 
+# Saving ratio Calculator
 def saving_calculator(income, expenses):
     saved = income - expenses
     ratio = saved / income if income > 0 else float('inf')
