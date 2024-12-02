@@ -36,120 +36,90 @@ def analyse_income_to_spend(username):
     # Fetch data
     income_data = db.get_income_accounts(username)
     expense_data = db.get_expense_accounts(username)
+    # Handle empty data
+    if not income_data:
+        st.info("No income data found. Please add income accounts to start analysis.")
+        return
+    if not expense_data:
+        st.info("No expense data found. Please add expense accounts to start analysis.")
+        return
 
-    # Convert to DataFrame for analysis
-    income_df = pd.DataFrame(income_data)
-    expense_df = pd.DataFrame(expense_data)
-
-    # Parse dates and filter the last year's data
-    income_df['date'] = pd.to_datetime(income_df['date'])
-    expense_df['date'] = pd.to_datetime(expense_df['date'])
-
-    one_year_ago = datetime.now() - timedelta(days=365)
-    income_df = income_df[income_df['date'] >= one_year_ago]
-    expense_df = expense_df[expense_df['date'] >= one_year_ago]
-
-    # Add recurring contributions for income
-    monthly_income = calculate_monthly_totals(income_df)
-
-    # Add recurring contributions for expenses
-    monthly_expenses = calculate_monthly_totals(expense_df)
-
-    # Align months for both income and expenses
-    all_months = pd.period_range(start=one_year_ago.strftime('%Y-%m'), end=datetime.now().strftime('%Y-%m'), freq="M")
-    monthly_income = monthly_income.reindex(all_months, fill_value=0)
-    monthly_expenses = monthly_expenses.reindex(all_months, fill_value=0)
-
-    # Calculate spend-to-income ratio
-    spending_percentage = (monthly_expenses / monthly_income.replace(0, float('inf'))) * 100
-
-    # Calculate totals for the year
-    total_income_year = monthly_income.sum()
-    total_expenses_year = monthly_expenses.sum()
-    spend_to_income_year = helpperFunctions.spending_percentage(total_income_year, total_expenses_year)
-
-    # Allow user to select a specific month
-    selected_month = st.selectbox("Select a Month to View Totals:", all_months.to_timestamp().strftime('%B %Y'))
-    st.info("The recommended Spend-to-Income Ratio is less than 80%.")
-    selected_month = pd.to_datetime(selected_month).to_period('M')
-
-    # Totals for the selected month
-    total_income_month = monthly_income[selected_month]
-    total_expenses_month = monthly_expenses[selected_month]
-    spend_to_income_month = helpperFunctions.spending_percentage(total_income_month, total_expenses_month)
-
-    # Display monthly totals
-    st.write(f"### Selected Month: {selected_month.strftime('%B %Y')}")
-    st.write(f"- **Total Income:** ${total_income_month:,.2f}")
-    st.write(f"- **Total Expenses:** ${total_expenses_month:,.2f}")
-    st.write(f"- **Spend-to-Income Ratio:** {spend_to_income_month:.2f}%")
-
-    # Display yearly totals
-    st.write(f"### This Year Totals:")
-    st.write(f"- **Total Income for the Year:** ${total_income_year:,.2f}")
-    st.write(f"- **Total Expenses for the Year:** ${total_expenses_year:,.2f}")
-    st.write(f"- **Spend-to-Income Ratio for the Year:** {spend_to_income_year:.2f}%")
-
-    multi_options = ["Income History", "Expenses History", "Spend-to-Income History", "View All"]
-
-    view_selections = st.multiselect("Which history would you like to graph?", multi_options)
-
-    # Marker colors for income and expenses
-    marker_colors_income = [
-        "lightcoral" if income < expense else "lightblue" if income == expense else "lightgreen"
-        for expense, income in zip(monthly_expenses.values, monthly_income.values)]
-
-    marker_colors_expenses = [
-        "lightcoral" if expense > income else "lightblue" if expense == income else "lightgreen"
-        for expense, income in zip(monthly_expenses.values, monthly_income.values)]
-
-    if "View All" in view_selections:
-        # Plot Monthly Income
-        st.write("### Monthly Income History")
-        fig_income = go.Figure()
-        fig_income.add_trace(go.Bar(x=monthly_income.index.strftime('%b %Y'), y=monthly_income.values,name="Income",
-                                    marker_color=marker_colors_income))
-        fig_income.update_layout(title="Monthly Income History", xaxis_title="Month", yaxis_title="Amount ($)",
-                                 template="plotly_white")
-        st.plotly_chart(fig_income)
-        st.write("**Color Key for Income Graph:**")
-        st.write("- **Green:** Income is greater than expenses.")
-        st.write("- **Blue:** Income is equal to expenses.")
-        st.write("- **Red:** Income is less than expenses.")
-
-        # Plot Monthly Expenses
-        st.write("### Monthly Expenses History")
-        fig_expenses = go.Figure()
-        fig_expenses.add_trace(go.Bar(x=monthly_expenses.index.strftime('%b %Y'), y=monthly_expenses.values,
-                                      name="Expenses", marker_color=marker_colors_expenses))
-        fig_expenses.update_layout(title="Monthly Expenses History", xaxis_title="Month", yaxis_title="Amount ($)",
-                                   template="plotly_white")
-        st.plotly_chart(fig_expenses)
-        st.write("**Color Key for Expenses Graph:**")
-        st.write("- **Green:** Expenses are less than income.")
-        st.write("- **Blue:** Expenses are equal to income.")
-        st.write("- **Red:** Expenses are greater than income.")
-
-        # Plot Spend-to-Income Ratio
-        marker_colors_ratio = ["lightgreen" if value < 80 else "lightcoral" for value in spending_percentage]
-        st.write("### Spend-to-Income Ratio History")
-        fig_ratio = go.Figure()
-        fig_ratio.add_trace(go.Bar(x=spending_percentage.index.strftime('%b %Y'), y=spending_percentage.values,
-                                   name="Spend-to-Income Ratio", marker_color=marker_colors_ratio))
-        fig_ratio.update_layout(title="Spend-to-Income Ratio History", xaxis_title="Month",
-                                yaxis_title="Percentage (%)",template="plotly_white")
-        st.plotly_chart(fig_ratio)
-        st.write("**Color Key for Spend-to-Income Ratio Graph:**")
-        st.write("- **Green:** Ratio is less than 80%.")
-        st.write("- **Red:** Ratio is greater than or equal to 80%.")
     else:
-        if "Income History" in view_selections:
+
+        # Convert to DataFrame for analysis
+        income_df = pd.DataFrame(income_data)
+        expense_df = pd.DataFrame(expense_data)
+
+
+
+        # Parse dates and filter the last year's data
+        income_df['date'] = pd.to_datetime(income_df['date'])
+        expense_df['date'] = pd.to_datetime(expense_df['date'])
+
+        one_year_ago = datetime.now() - timedelta(days=365)
+        income_df = income_df[income_df['date'] >= one_year_ago]
+        expense_df = expense_df[expense_df['date'] >= one_year_ago]
+
+        # Add recurring contributions for income
+        monthly_income = calculate_monthly_totals(income_df)
+
+        # Add recurring contributions for expenses
+        monthly_expenses = calculate_monthly_totals(expense_df)
+
+        # Align months for both income and expenses
+        all_months = pd.period_range(start=one_year_ago.strftime('%Y-%m'), end=datetime.now().strftime('%Y-%m'), freq="M")
+        monthly_income = monthly_income.reindex(all_months, fill_value=0)
+        monthly_expenses = monthly_expenses.reindex(all_months, fill_value=0)
+
+        # Calculate spend-to-income ratio
+        spending_percentage = (monthly_expenses / monthly_income.replace(0, float('inf'))) * 100
+
+        # Calculate totals for the year
+        total_income_year = monthly_income.sum()
+        total_expenses_year = monthly_expenses.sum()
+        spend_to_income_year = helpperFunctions.spending_percentage(total_income_year, total_expenses_year)
+
+        # Allow user to select a specific month
+        selected_month = st.selectbox("Select a Month to View Totals:", all_months.to_timestamp().strftime('%B %Y'))
+        st.info("The recommended Spend-to-Income Ratio is less than 80%.")
+        selected_month = pd.to_datetime(selected_month).to_period('M')
+
+        # Totals for the selected month
+        total_income_month = monthly_income[selected_month]
+        total_expenses_month = monthly_expenses[selected_month]
+        spend_to_income_month = helpperFunctions.spending_percentage(total_income_month, total_expenses_month)
+
+        # Display monthly totals
+        st.write(f"### Selected Month: {selected_month.strftime('%B %Y')}")
+        st.write(f"- **Total Income:** ${total_income_month:,.2f}")
+        st.write(f"- **Total Expenses:** ${total_expenses_month:,.2f}")
+        st.write(f"- **Spend-to-Income Ratio:** {spend_to_income_month:.2f}%")
+
+        # Display yearly totals
+        st.write(f"### This Year Totals:")
+        st.write(f"- **Total Income for the Year:** ${total_income_year:,.2f}")
+        st.write(f"- **Total Expenses for the Year:** ${total_expenses_year:,.2f}")
+        st.write(f"- **Spend-to-Income Ratio for the Year:** {spend_to_income_year:.2f}%")
+
+        multi_options = ["Income History", "Expenses History", "Spend-to-Income History", "View All"]
+
+        view_selections = st.multiselect("Which history would you like to graph?", multi_options)
+
+        # Marker colors for income and expenses
+        marker_colors_income = [
+            "lightcoral" if income < expense else "lightblue" if income == expense else "lightgreen"
+            for expense, income in zip(monthly_expenses.values, monthly_income.values)]
+
+        marker_colors_expenses = [
+            "lightcoral" if expense > income else "lightblue" if expense == income else "lightgreen"
+            for expense, income in zip(monthly_expenses.values, monthly_income.values)]
+
+        if "View All" in view_selections:
             # Plot Monthly Income
             st.write("### Monthly Income History")
             fig_income = go.Figure()
-            fig_income.add_trace(
-                go.Bar(x=monthly_income.index.strftime('%b %Y'), y=monthly_income.values, name="Income",
-                       marker_color=marker_colors_income))
+            fig_income.add_trace(go.Bar(x=monthly_income.index.strftime('%b %Y'), y=monthly_income.values,name="Income",
+                                        marker_color=marker_colors_income))
             fig_income.update_layout(title="Monthly Income History", xaxis_title="Month", yaxis_title="Amount ($)",
                                      template="plotly_white")
             st.plotly_chart(fig_income)
@@ -158,7 +128,6 @@ def analyse_income_to_spend(username):
             st.write("- **Blue:** Income is equal to expenses.")
             st.write("- **Red:** Income is less than expenses.")
 
-        if "Expenses History" in view_selections:
             # Plot Monthly Expenses
             st.write("### Monthly Expenses History")
             fig_expenses = go.Figure()
@@ -171,7 +140,7 @@ def analyse_income_to_spend(username):
             st.write("- **Green:** Expenses are less than income.")
             st.write("- **Blue:** Expenses are equal to income.")
             st.write("- **Red:** Expenses are greater than income.")
-        if "Spend-to-Income History" in view_selections:
+
             # Plot Spend-to-Income Ratio
             marker_colors_ratio = ["lightgreen" if value < 80 else "lightcoral" for value in spending_percentage]
             st.write("### Spend-to-Income Ratio History")
@@ -179,11 +148,53 @@ def analyse_income_to_spend(username):
             fig_ratio.add_trace(go.Bar(x=spending_percentage.index.strftime('%b %Y'), y=spending_percentage.values,
                                        name="Spend-to-Income Ratio", marker_color=marker_colors_ratio))
             fig_ratio.update_layout(title="Spend-to-Income Ratio History", xaxis_title="Month",
-                                    yaxis_title="Percentage (%)", template="plotly_white")
+                                    yaxis_title="Percentage (%)",template="plotly_white")
             st.plotly_chart(fig_ratio)
             st.write("**Color Key for Spend-to-Income Ratio Graph:**")
             st.write("- **Green:** Ratio is less than 80%.")
             st.write("- **Red:** Ratio is greater than or equal to 80%.")
+        else:
+            if "Income History" in view_selections:
+                # Plot Monthly Income
+                st.write("### Monthly Income History")
+                fig_income = go.Figure()
+                fig_income.add_trace(
+                    go.Bar(x=monthly_income.index.strftime('%b %Y'), y=monthly_income.values, name="Income",
+                           marker_color=marker_colors_income))
+                fig_income.update_layout(title="Monthly Income History", xaxis_title="Month", yaxis_title="Amount ($)",
+                                         template="plotly_white")
+                st.plotly_chart(fig_income)
+                st.write("**Color Key for Income Graph:**")
+                st.write("- **Green:** Income is greater than expenses.")
+                st.write("- **Blue:** Income is equal to expenses.")
+                st.write("- **Red:** Income is less than expenses.")
+
+            if "Expenses History" in view_selections:
+                # Plot Monthly Expenses
+                st.write("### Monthly Expenses History")
+                fig_expenses = go.Figure()
+                fig_expenses.add_trace(go.Bar(x=monthly_expenses.index.strftime('%b %Y'), y=monthly_expenses.values,
+                                              name="Expenses", marker_color=marker_colors_expenses))
+                fig_expenses.update_layout(title="Monthly Expenses History", xaxis_title="Month", yaxis_title="Amount ($)",
+                                           template="plotly_white")
+                st.plotly_chart(fig_expenses)
+                st.write("**Color Key for Expenses Graph:**")
+                st.write("- **Green:** Expenses are less than income.")
+                st.write("- **Blue:** Expenses are equal to income.")
+                st.write("- **Red:** Expenses are greater than income.")
+            if "Spend-to-Income History" in view_selections:
+                # Plot Spend-to-Income Ratio
+                marker_colors_ratio = ["lightgreen" if value < 80 else "lightcoral" for value in spending_percentage]
+                st.write("### Spend-to-Income Ratio History")
+                fig_ratio = go.Figure()
+                fig_ratio.add_trace(go.Bar(x=spending_percentage.index.strftime('%b %Y'), y=spending_percentage.values,
+                                           name="Spend-to-Income Ratio", marker_color=marker_colors_ratio))
+                fig_ratio.update_layout(title="Spend-to-Income Ratio History", xaxis_title="Month",
+                                        yaxis_title="Percentage (%)", template="plotly_white")
+                st.plotly_chart(fig_ratio)
+                st.write("**Color Key for Spend-to-Income Ratio Graph:**")
+                st.write("- **Green:** Ratio is less than 80%.")
+                st.write("- **Red:** Ratio is greater than or equal to 80%.")
 
 
 def calculate_monthly_totals(df):

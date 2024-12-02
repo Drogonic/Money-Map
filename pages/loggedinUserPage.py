@@ -51,19 +51,30 @@ with smart:
 with overview:
     overview_accounts.overview_selection()
 with settings:
+    # Pull accounts for the logged-in user
+    if "username" in st.session_state:
+        username = st.session_state["username"]
+    else:
+        st.error("You must be logged in to manage accounts.")
+        st.stop()
+
+    # Log Out Button
     if st.button("Log Out"):
         st.session_state.clear()
         st.success("You have been logged out.")
         time.sleep(1)
         st.switch_page("AboutUs.py")
-    if st.button("Delete Account"):
-        if st.button("Proceed with deletion"):
-            db_conn.delete_account(st.session_state.get("username"))
-            st.success("Your account has been deleted.")
-            st.session_state.clear()
-            time.sleep(1)
-            st.switch_page("pages/AboutUs.py")
-        elif st.button("Cancel deletion"):
-            st.info("Account deletion canceled.")
-            st.rerun()
 
+    # Delete Account Section
+    delete_confirmed = st.checkbox("I understand this will delete my account permanently.")
+
+    if delete_confirmed:
+        if st.button("Delete My Account"):
+            delete_result = db_conn.delete_account(username)
+            if delete_result:
+                st.success("Your account has been deleted.")
+                st.session_state.clear()
+                time.sleep(1)
+                st.switch_page("AboutUs.py")
+            else:
+                st.error("An error occurred while deleting your account. Please try again later.")
