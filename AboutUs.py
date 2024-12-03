@@ -1,20 +1,30 @@
 from PIL import Image
+import os
 import streamlit as st
 import base64
 import helpperFunctions
 
 helpperFunctions.hide_sidebar()
 
+# def get_base64_image(image_path):
+#     """Convert an image to a base64 string."""
+#     with open(image_path, "rb") as img_file:
+#         return base64.b64encode(img_file.read()).decode("utf-8")
+
+
 def get_base64_image(image_path):
-    """Convert an image to a base64 string."""
-    with open(image_path, "rb") as img_file:
+    # Resolve the absolute path dynamically
+    abs_path = os.path.join(os.path.dirname(__file__), image_path)
+    if not os.path.exists(abs_path):
+        raise FileNotFoundError(f"Image not found at path: {abs_path}")
+    with open(abs_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode("utf-8")
 
 # Base64 strings for images
 logo_base64 = get_base64_image("MoneyMapLogo.png")
 calc_base64 = get_base64_image("Calculator.png")
 coins_base64 = get_base64_image("Coins.png")
-pie_base64 = get_base64_image("PiChart.png")
+pie_base64 = get_base64_image("piChart.png")
 
 # Add navigation buttons at the top-right corner using Streamlit
 nav_col1, nav_col2, nav_col3 = st.columns([6, 1, 1])
