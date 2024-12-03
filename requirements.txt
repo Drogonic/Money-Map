@@ -1,3 +1,7 @@
 pymongo
 streamlit
 bcrypt
+pandas
+plotly
+Pillow
+
