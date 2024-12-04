@@ -197,9 +197,11 @@ def analyse_income_to_spend(username):
                 st.write("- **Red:** Ratio is greater than or equal to 80%.")
 
 
+
 def calculate_monthly_totals(df):
     df['month'] = df['date'].dt.to_period('M')
-    monthly_totals = pd.Series(0, index=pd.period_range(df['month'].min(), df['month'].max(), freq='M'))
+    # Initialize monthly totals for the entire range
+    monthly_totals = pd.Series(0, index=pd.period_range(df['month'].min(), pd.to_datetime("now").to_period("M"), freq='M'))
 
     for _, row in df.iterrows():
         start_date = row['date']
@@ -207,32 +209,32 @@ def calculate_monthly_totals(df):
         is_recurring = row.get('is_recurring', False)
         period = row.get('period', None)
 
+        # If not recurring, only add for the specific month
+        if not is_recurring:
+            transaction_month = pd.Period(start_date.strftime('%Y-%m'), freq='M')
+            if transaction_month in monthly_totals.index:
+                monthly_totals[transaction_month] += amount
+            continue
+
+        # For recurring transactions, apply to all months from the start date
         current_date = start_date
         while current_date <= datetime.now():
-            current_month = pd.Period(current_date.strftime('%Y-%m'), freq='M')
+            transaction_month = pd.Period(current_date.strftime('%Y-%m'), freq='M')
 
-            if current_month in monthly_totals.index:
-                if is_recurring:
-                    if period == "Daily":
-                        days_in_month = calendar.monthrange(current_date.year, current_date.month)[1]
-                        monthly_totals[current_month] += amount * days_in_month
-                    elif period == "Weekly":
-                        weeks_in_month = len(pd.date_range(current_date, current_date + timedelta(days=30), freq='W'))
-                        monthly_totals[current_month] += amount * weeks_in_month
-                    elif period == "Biweekly":
-                        biweekly_in_month = len(pd.date_range(current_date, current_date +
-                                                              timedelta(days=30), freq='2W'))
-                        monthly_totals[current_month] += amount * biweekly_in_month
-                    elif period == "Monthly":
-                        monthly_totals[current_month] += amount
-                    elif period == "Yearly" and current_date.month == start_date.month:
-                        monthly_totals[current_month] += amount
-                else:
-                    if current_date.month == start_date.month and current_date.year == start_date.year:
-                        monthly_totals[current_month] += amount
-
-            if not is_recurring:
-                break
+            if transaction_month in monthly_totals.index:
+                if period == "Daily":
+                    days_in_month = calendar.monthrange(current_date.year, current_date.month)[1]
+                    monthly_totals[transaction_month] += amount * days_in_month
+                elif period == "Weekly":
+                    weeks_in_month = len(pd.date_range(current_date, current_date + timedelta(days=30), freq='W'))
+                    monthly_totals[transaction_month] += amount * weeks_in_month
+                elif period == "Biweekly":
+                    biweekly_in_month = len(pd.date_range(current_date, current_date + timedelta(days=30), freq='2W'))
+                    monthly_totals[transaction_month] += amount * biweekly_in_month
+                elif period == "Monthly":
+                    monthly_totals[transaction_month] += amount
+                elif period == "Yearly" and current_date.month == start_date.month:
+                    monthly_totals[transaction_month] += amount
 
             # Advance to the next recurrence
             if period == "Daily":
@@ -248,6 +250,7 @@ def calculate_monthly_totals(df):
                 current_date = current_date.replace(year=current_date.year + 1)
 
     return monthly_totals
+
 
 
 def view_account_projections(username):

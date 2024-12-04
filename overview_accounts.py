@@ -351,11 +351,8 @@ def load_income_for_month(username):
 
 
 def load_income_for_year(username):
-    # Same as expenses
     incomes = db_conn.get_income_accounts(username)
-
     current_year_incomes = []
-
     now = datetime.now()
     start_of_year = datetime(now.year, 1, 1)
 
@@ -363,26 +360,24 @@ def load_income_for_year(username):
         income_date = datetime.strptime(income.get("date", "1970-01-01"), "%Y-%m-%d")
         recurring = income.get("is_recurring", False)
         income_amount = income.get("amount", 0.0)
-
         total_recurring = 0
+
         if recurring:
             period = income.get("period", "None")
-            current_date = income_date
-
-            while current_date <= now:
-                if current_date >= start_of_year:
-                    total_recurring += income_amount
-                if period == "Daily":
-                    current_date += timedelta(days=1)
-                elif period == "Weekly":
-                    current_date += timedelta(weeks=1)
-                elif period == "Biweekly":
-                    current_date += timedelta(weeks=2)
-                elif period == "Monthly":
-                    next_month = current_date.month % 12 + 1
-                    current_date = current_date.replace(month=next_month)
-                elif period == "Yearly":
-                    current_date = current_date.replace(year=current_date.year + 1)
+            if period == "Daily":
+                days_in_year = (now - start_of_year).days + 1
+                total_recurring = income_amount * days_in_year
+            elif period == "Weekly":
+                weeks_in_year = ((now - start_of_year).days + 1) // 7
+                total_recurring = income_amount * weeks_in_year
+            elif period == "Biweekly":
+                biweekly_in_year = ((now - start_of_year).days + 1) // 14
+                total_recurring = income_amount * biweekly_in_year
+            elif period == "Monthly":
+                months_in_year = now.month - start_of_year.month + 1
+                total_recurring = income_amount * months_in_year
+            elif period == "Yearly" and income_date.year <= now.year:
+                total_recurring = income_amount
 
         formatted_income = {
             "Income Name": income.get("income_name", "N/A"),
@@ -395,9 +390,7 @@ def load_income_for_year(username):
         current_year_incomes.append(formatted_income)
 
     df_year = pd.DataFrame(current_year_incomes)
-
     total_year = sum(income["Amount"] for income in current_year_incomes)
-
     df_year.index = range(1, len(df_year) + 1)
 
     st.write("### Income for This Year")
@@ -406,7 +399,6 @@ def load_income_for_year(username):
         st.write(f"**Total Amount of Income for This Year:** ${total_year:,.2f}")
     else:
         st.write("No income recorded for this year.")
-
 
 def load_format_display_credit_card_data(username):
     # Pull credit card accounts from the database

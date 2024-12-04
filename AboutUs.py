@@ -6,11 +6,6 @@ import helpperFunctions
 
 helpperFunctions.hide_sidebar()
 
-# def get_base64_image(image_path):
-#     """Convert an image to a base64 string."""
-#     with open(image_path, "rb") as img_file:
-#         return base64.b64encode(img_file.read()).decode("utf-8")
-
 
 def get_base64_image(image_path):
     # Resolve the absolute path dynamically
