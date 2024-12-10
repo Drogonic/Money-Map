@@ -1,0 +1,426 @@
+[{
+  "_id": "unique_object_id",
+  "username": "test_user",
+  "checking_accounts": [
+    {
+      "account_name": "Main Checking",
+      "amount": 1500,
+      "has_fee": true,
+      "fee_period": "Monthly",
+      "fee_amount": 10,
+      "has_interest": true,
+      "interest_rate_apy": 1.5,
+      "compounding_type": "Monthly"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "673b70261a5d4f1dbff6ba3f"
+  },
+  "username": "TestJerrick",
+  "password": "$2b$12$HlPDJb//lKPc9Imi61gV.uS2UnVAyzq1pyB98qP.GFBxp1OxoYLWq",
+  "email": "test@email.com",
+  "checking_accounts": [
+    {
+      "account_name": "Test for decimal",
+      "amount": 50.65,
+      "has_fee": false,
+      "fee_period": null,
+      "fee_amount": 0,
+      "has_interest": false,
+      "interest_rate_apy": 0,
+      "compounding_type": null
+    },
+    {
+      "account_name": "Test1Check",
+      "amount": 500,
+      "has_fee": true,
+      "fee_period": "Monthly",
+      "fee_amount": 5.26,
+      "has_interest": false,
+      "interest_rate_apy": 0,
+      "compounding_type": null
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "673d433f521c20e5871fe747"
+  },
+  "username": "rblan110",
+  "password": "$2b$12$H7EmxrDkgpHjXavyblXzce9V5bBm4QdKqagGB5m9RWiHA1bYt7Vha",
+  "email": "rblan110",
+  "expenses": [
+    {
+      "expense_name": "Iphone",
+      "amount": 250,
+      "date": "2024-11-19",
+      "is_recurring": false,
+      "period": "Monthly"
+    },
+    {
+      "expense_name": "Tesla",
+      "amount": 900,
+      "date": "2024-11-01",
+      "is_recurring": true,
+      "period": "Monthly"
+    },
+    {
+      "expense_name": "Netflix",
+      "amount": 30,
+      "date": "2024-06-01",
+      "is_recurring": true,
+      "period": "Monthly"
+    },
+    {
+      "expense_name": "Car Wash",
+      "amount": 45,
+      "date": "2024-07-05",
+      "is_recurring": true,
+      "period": "Weekly"
+    },
+    {
+      "expense_name": "Test",
+      "amount": 10000,
+      "date": "2024-01-01",
+      "is_recurring": false,
+      "period": null
+    },
+    {
+      "expense_name": "Gas",
+      "amount": 90.99,
+      "date": "2024-12-06",
+      "is_recurring": false,
+      "period": null
+    }
+  ],
+  "checking_accounts": [
+    {
+      "account_name": "WF",
+      "amount": 910.45,
+      "has_fee": false,
+      "fee_period": "Monthly",
+      "fee_amount": 0,
+      "has_interest": false,
+      "interest_rate_apy": 0,
+      "compounding_type": "Daily"
+    },
+    {
+      "account_name": "NF",
+      "amount": 10000,
+      "has_fee": true,
+      "fee_period": "Yearly",
+      "fee_amount": 20,
+      "has_interest": true,
+      "interest_rate_apy": 2.3,
+      "compounding_type": "Monthly"
+    },
+    {
+      "account_name": "Test1",
+      "amount": 10000,
+      "has_fee": true,
+      "fee_period": "Yearly",
+      "fee_amount": 50,
+      "has_interest": true,
+      "interest_rate_apy": 4,
+      "compounding_type": "Annual"
+    }
+  ],
+  "savings_accounts": [
+    {
+      "account_name": "WF",
+      "amount": 1500,
+      "has_fee": true,
+      "fee_period": "Monthly",
+      "fee_amount": 5,
+      "has_interest": true,
+      "interest_rate_apy": 8,
+      "compounding_type": "Monthly"
+    },
+    {
+      "account_name": "BA",
+      "amount": 900,
+      "has_fee": false,
+      "fee_period": "Monthly",
+      "fee_amount": 0,
+      "has_interest": false,
+      "interest_rate_apy": 0,
+      "compounding_type": "Daily"
+    }
+  ],
+  "incomes": [
+    {
+      "income_name": "Work",
+      "amount": 500,
+      "date": "2024-11-15",
+      "is_recurring": true,
+      "period": "Biweekly"
+    },
+    {
+      "income_name": "VA",
+      "amount": 3946.25,
+      "date": "2024-01-01",
+      "is_recurring": true,
+      "period": "Monthly"
+    },
+    {
+      "income_name": "Test",
+      "amount": 1000,
+      "date": "2024-07-01",
+      "is_recurring": false,
+      "period": null
+    },
+    {
+      "income_name": "Test1",
+      "amount": 1000,
+      "date": "2023-11-15",
+      "is_recurring": false,
+      "period": null
+    },
+    {
+      "income_name": "Test3",
+      "amount": 100,
+      "date": "2023-12-01",
+      "is_recurring": false,
+      "period": null
+    }
+  ],
+  "loans": [
+    {
+      "loan_name": "AMX",
+      "initial_amount": 5000,
+      "amount_left": 5000,
+      "start_date": "2024-11-01",
+      "end_date": "2026-11-26",
+      "monthly_payment": 300,
+      "interest_rate": 4
+    }
+  ],
+  "credit_accounts": [
+    {
+      "credit_name": "WF",
+      "total_balance": 6000,
+      "statement_amount": 5000,
+      "statement_date": "2024-10-14",
+      "due_date": "2024-11-13",
+      "minimum_due": 200,
+      "regular_interest": 125,
+      "has_promo": true,
+      "promo_interest": 5,
+      "promo_end_date": "2024-11-30",
+      "annual_fee": true,
+      "fee_amount": 10
+    },
+    {
+      "credit_name": "Amex",
+      "total_balance": 1000,
+      "statement_amount": 1000,
+      "statement_date": "2024-11-12",
+      "due_date": "2024-12-19",
+      "minimum_due": 199.82,
+      "regular_interest": 23,
+      "has_promo": false,
+      "promo_interest": 0,
+      "promo_end_date": "2024-11-19",
+      "annual_fee": false,
+      "fee_amount": 0
+    }
+  ],
+  "savings_goals": [
+    {
+      "goal_name": "House",
+      "target_amount": 100000,
+      "target_date": "2026-11-30"
+    },
+    {
+      "goal_name": "Car",
+      "target_amount": 45000,
+      "target_date": "2025-01-31"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "673e0847a1978007b3407492"
+  },
+  "username": "nat",
+  "password": "$2b$12$QxZ4YCpfCCcpSo4PU912LOuY9hSwQx.dvGOipX2dEpRLOWfdgiXX.",
+  "email": "ngarc280@fiu.edu",
+  "checking_accounts": [
+    {
+      "account_name": "Chase",
+      "amount": 10,
+      "has_fee": true,
+      "fee_period": "Monthly",
+      "fee_amount": 0.01,
+      "has_interest": false,
+      "interest_rate_apy": 0,
+      "compounding_type": null
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "673e141443736dfb7b9b39c8"
+  },
+  "username": "Lilyyy",
+  "password": "$2b$12$jvSX9UXMgs3AOeLievmHnuZsiOTLziqgymXVg3F3C88yIrwObam5i",
+  "email": "lpadg002@fiu.edu"
+},
+{
+  "_id": {
+    "$oid": "6740b09ff7e609da04204783"
+  },
+  "username": "TestNew",
+  "password": "$2b$12$EpIdDmY5whyWN9GzYczeoewEhO//cPDxIRjdJuu5pDLMvGAW9S6iW",
+  "email": "terry@fiu.edu",
+  "checking_accounts": [
+    {
+      "account_name": "Chase",
+      "amount": 15000,
+      "has_fee": false,
+      "fee_period": null,
+      "fee_amount": 0,
+      "has_interest": true,
+      "interest_rate_apy": 2.5,
+      "compounding_type": "Monthly"
+    },
+    {
+      "account_name": "Wells fargo",
+      "amount": 25000,
+      "has_fee": false,
+      "fee_period": "Monthly",
+      "fee_amount": 0,
+      "has_interest": true,
+      "interest_rate_apy": 1.23,
+      "compounding_type": "Monthly"
+    },
+    {
+      "account_name": "BOFA",
+      "amount": 81099,
+      "has_fee": false,
+      "fee_period": null,
+      "fee_amount": 0,
+      "has_interest": true,
+      "interest_rate_apy": 2.3,
+      "compounding_type": "Monthly"
+    }
+  ],
+  "expenses": [
+    {
+      "expense_name": "Trader Joes",
+      "amount": 160,
+      "date": "2024-11-22",
+      "is_recurring": false,
+      "period": null
+    }
+  ],
+  "savings_accounts": [
+    {
+      "account_name": "Piggy Bank",
+      "amount": 50.63,
+      "has_fee": false,
+      "fee_period": null,
+      "fee_amount": 0,
+      "has_interest": false,
+      "interest_rate_apy": 0,
+      "compounding_type": null
+    }
+  ],
+  "incomes": [
+    {
+      "income_name": "CVS",
+      "amount": 5000,
+      "date": "2024-11-22",
+      "is_recurring": true,
+      "period": "Biweekly"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "6740d5b25835e20306662ff8"
+  },
+  "username": "chr",
+  "password": "$2b$12$2OhjUXdj.GF5SCwfWC/VQeOig37VP/jR0n51M7fek1tcrEIuhBcYS",
+  "email": "chr"
+},
+{
+  "_id": {
+    "$oid": "6748e9dc613caa0058bd8bbd"
+  },
+  "username": "test1",
+  "password": "$2b$12$ph39r3LVvo6vRkBi1pJg.OSAwNjQo.SjXaYVdF/TFsIsN7BdxU8dy",
+  "email": "test1@gmail.com"
+},
+{
+  "_id": {
+    "$oid": "674dc6360f910804eacef414"
+  },
+  "username": "DemoTest",
+  "password": "$2b$12$KlCj.ajYmBXYLyPtSUe0hOONXsEwhIgoVnjWB6LuVCMikgzhGO3KW",
+  "email": "Demo@fiu.edu"
+},
+{
+  "_id": {
+    "$oid": "674dc6d80f910804eacef415"
+  },
+  "username": "DemoUser",
+  "password": "$2b$12$h370fcxUt9M.nE5zfPTKWu5E5JV4vBD9NTjwATPYzxc9y6tmPFd6K",
+  "email": "Jwong060@fiu.edu",
+  "checking_accounts": [
+    {
+      "account_name": "Wells Fargo",
+      "amount": 500,
+      "has_fee": true,
+      "fee_period": "Monthly",
+      "fee_amount": 80,
+      "has_interest": true,
+      "interest_rate_apy": 0.25,
+      "compounding_type": "Monthly"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "674dc7f80f910804eacef416"
+  },
+  "username": "Demouser",
+  "password": "$2b$12$8q4PXsJtKNrZL9aUESisAOYu47SyJHFCIqONEKPublRONgHc8nXpG",
+  "email": "Jwong060@fiu.edu"
+},
+{
+  "_id": {
+    "$oid": "674dc9cc0f910804eacef417"
+  },
+  "username": "Demo",
+  "password": "$2b$12$K6Sxf9dF7XGMnVlIKudI0ebiGuAFchwvTfNk1Xx0J6PrkngSuzSpe",
+  "email": "jwong060@fiu.edu",
+  "expenses": [],
+  "incomes": [
+    {
+      "income_name": "Payday",
+      "amount": 3000,
+      "date": "2024-12-02",
+      "is_recurring": true,
+      "period": "Biweekly"
+    }
+  ]
+},
+{
+  "_id": {
+    "$oid": "674f98709314cf555239942b"
+  },
+  "username": "newaccount",
+  "password": "$2b$12$UKlAOKZmJ39KGfFU5i/FPOP0dT9HPV6sk29YNAxgDjb/KlQxD9zNC",
+  "email": "jwong60@fiu.edu"
+},
+{
+  "_id": {
+    "$oid": "67531e6ba6082bb9ea199feb"
+  },
+  "username": "DemoTests",
+  "password": "$2b$12$QXJcqrIT5zxWMFNOPMGBvemVh2Rzzme7rzZdTehGq0RMTJD0P0pO6",
+  "email": "jwong@fiu.edu"
+}]
