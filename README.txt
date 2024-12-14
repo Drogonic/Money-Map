@@ -14,7 +14,7 @@ requirements.txt: Lists all the dependencies required to run the project. Instal
 
 pip install -r requirements.txt
 
-README.md: Documentation providing an overview of the project and its structure.
+README.txt: Documentation providing an overview of the project and its structure.
 
 finalUML.puml: UML diagram of the project, created with PlantUML.
 
